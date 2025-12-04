@@ -1,0 +1,20 @@
+<view class="container">
+  <view wx:for="{{reports}}" wx:key="id" class="card report-card" data-id="{{item.id}}" bindtap="navigateToDetail">
+    <view class="header">
+      <view class="title">第{{item.week_number}}周周报</view>
+      <view class="status {{item.status}}">
+        {{item.status === 'reviewed' ? '已批改' : '待批改'}}
+      </view>
+    </view>
+    <view class="info">
+      <text>岗位：{{item.position_title}}</text>
+    </view>
+    <view class="info" wx:if="{{item.score !== null}}">
+      <text>评分：{{item.score}}分</text>
+    </view>
+    <view class="time">提交时间：{{item.created_at}}</view>
+  </view>
+  
+  <view wx:if="{{reports.length === 0}}" class="empty">暂无周报记录</view>
+</view>
+

@@ -1,0 +1,16 @@
+<view class="container">
+  <view wx:for="{{applications}}" wx:key="id" class="card application-card">
+    <view class="title">{{item.position_title}}</view>
+    <view class="company">{{item.position_company}}</view>
+    <view class="status" style="color: {{getStatusColor(item.status)}}">
+      {{getStatusText(item.status)}}
+    </view>
+    <view class="time">申请时间：{{item.created_at}}</view>
+    <view wx:if="{{item.review_comment}}" class="comment">
+      审核意见：{{item.review_comment}}
+    </view>
+  </view>
+  
+  <view wx:if="{{applications.length === 0}}" class="empty">暂无申请记录</view>
+</view>
+

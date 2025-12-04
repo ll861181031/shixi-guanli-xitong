@@ -1,0 +1,36 @@
+<view class="container">
+  <view wx:if="{{report}}" class="card">
+    <view class="title">第{{report.week_number}}周周报</view>
+    <view class="info-row">
+      <text>岗位：</text>
+      <text>{{report.position_title}}</text>
+    </view>
+    <view class="info-row">
+      <text>状态：</text>
+      <text>{{report.status === 'reviewed' ? '已批改' : '待批改'}}</text>
+    </view>
+    
+    <view class="section">
+      <view class="section-title">周报内容</view>
+      <view class="section-content">{{report.content}}</view>
+    </view>
+    
+    <view wx:if="{{report.attachment_name}}" class="section">
+      <view class="section-title">附件</view>
+      <view class="attachment">{{report.attachment_name}}</view>
+    </view>
+    
+    <view wx:if="{{report.status === 'reviewed'}}" class="section">
+      <view class="section-title">评分</view>
+      <view class="score">{{report.score}}分</view>
+    </view>
+    
+    <view wx:if="{{report.comment}}" class="section">
+      <view class="section-title">批改意见</view>
+      <view class="section-content">{{report.comment}}</view>
+    </view>
+    
+    <view class="time">提交时间：{{report.created_at}}</view>
+  </view>
+</view>
+

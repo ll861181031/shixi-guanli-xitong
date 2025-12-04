@@ -1,0 +1,32 @@
+<view class="container">
+  <view class="user-card card">
+    <view class="avatar">{{user.real_name ? user.real_name[0] : 'U'}}</view>
+    <view class="info">
+      <view class="name">{{user.real_name || '未设置'}}</view>
+      <view class="student-id">学号：{{user.student_id || '未绑定'}}</view>
+      <view class="credit-score">信用分：{{user.credit_score || 100}}</view>
+    </view>
+  </view>
+
+  <view class="menu card">
+    <view class="menu-item" data-url="/pages/my-applications/my-applications" bindtap="navigateTo">
+      <text>我的申请</text>
+      <text class="arrow">></text>
+    </view>
+    <view class="menu-item" data-url="/pages/checkin-history/checkin-history" bindtap="navigateTo">
+      <text>签到记录</text>
+      <text class="arrow">></text>
+    </view>
+    <view class="menu-item" data-url="/pages/my-reports/my-reports" bindtap="navigateTo">
+      <text>我的周报</text>
+      <text class="arrow">></text>
+    </view>
+    <view class="menu-item" data-url="/pages/messages/messages" bindtap="navigateTo">
+      <text>消息通知</text>
+      <text class="arrow">></text>
+    </view>
+  </view>
+
+  <button class="logout-btn" bindtap="logout">退出登录</button>
+</view>
+

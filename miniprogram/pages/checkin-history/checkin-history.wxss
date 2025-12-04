@@ -1,0 +1,44 @@
+.checkin-card {
+  padding: 30rpx;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.date {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.status {
+  padding: 5rpx 15rpx;
+  border-radius: 5rpx;
+  font-size: 24rpx;
+}
+
+.status.normal {
+  background-color: #f0f9ff;
+  color: #67c23a;
+}
+
+.status.abnormal {
+  background-color: #fef0f0;
+  color: #f56c6c;
+}
+
+.info {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.empty {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+}
+

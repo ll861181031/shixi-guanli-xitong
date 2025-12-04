@@ -1,0 +1,52 @@
+<view class="container">
+  <view class="user-info card">
+    <view class="avatar">{{user.real_name ? user.real_name[0] : 'U'}}</view>
+    <view class="info">
+      <view class="name">{{user.real_name || '未设置'}}</view>
+      <view class="student-id">学号：{{user.student_id || '未绑定'}}</view>
+    </view>
+  </view>
+
+  <view class="stats card">
+    <view class="stat-item" data-url="/pages/my-applications/my-applications">
+      <view class="stat-value">{{stats.applicationStatus === 'approved' ? '已通过' : stats.applicationStatus === 'pending' ? '待审核' : '未申请'}}</view>
+      <view class="stat-label">申请状态</view>
+    </view>
+    <view class="stat-item" data-url="/pages/checkin-history/checkin-history">
+      <view class="stat-value">{{stats.checkinCount}}</view>
+      <view class="stat-label">签到次数</view>
+    </view>
+    <view class="stat-item" data-url="/pages/my-reports/my-reports">
+      <view class="stat-value">{{stats.reportCount}}</view>
+      <view class="stat-label">周报数量</view>
+    </view>
+  </view>
+
+  <view class="menu card">
+    <view class="menu-item" data-url="/pages/positions/positions" bindtap="navigateTo">
+      <text class="icon">📋</text>
+      <text>查看岗位</text>
+    </view>
+    <view class="menu-item" data-url="/pages/my-applications/my-applications" bindtap="navigateTo">
+      <text class="icon">📝</text>
+      <text>我的申请</text>
+    </view>
+    <view class="menu-item" data-url="/pages/checkin/checkin" bindtap="navigateTo">
+      <text class="icon">📍</text>
+      <text>签到</text>
+    </view>
+    <view class="menu-item" data-url="/pages/weekly-report/weekly-report" bindtap="navigateTo">
+      <text class="icon">📄</text>
+      <text>提交周报</text>
+    </view>
+    <view class="menu-item" data-url="/pages/my-reports/my-reports" bindtap="navigateTo">
+      <text class="icon">📊</text>
+      <text>我的周报</text>
+    </view>
+    <view class="menu-item" data-url="/pages/messages/messages" bindtap="navigateTo">
+      <text class="icon">💬</text>
+      <text>消息<text wx:if="{{stats.unreadMessages > 0}}" class="badge">{{stats.unreadMessages}}</text></text>
+    </view>
+  </view>
+</view>
+

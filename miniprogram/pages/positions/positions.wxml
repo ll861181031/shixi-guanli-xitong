@@ -1,0 +1,20 @@
+<view class="container">
+  <view class="search-bar">
+    <input placeholder="搜索岗位" value="{{keyword}}" bindinput="onSearchInput" />
+    <button size="mini" bindtap="onSearch">搜索</button>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <view wx:for="{{positions}}" wx:key="id" class="position-card card" data-id="{{item.id}}" bindtap="navigateToDetail">
+    <view class="title">{{item.title}}</view>
+    <view class="company">{{item.company_name}}</view>
+    <view class="location">📍 {{item.location}}</view>
+    <view class="info">
+      <text>已接收：{{item.current_students}}/{{item.max_students}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{!loading && positions.length === 0}}" class="empty">暂无岗位</view>
+</view>
+

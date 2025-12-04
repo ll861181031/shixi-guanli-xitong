@@ -1,0 +1,29 @@
+<view class="container">
+  <view class="card">
+    <view class="form-item">
+      <view class="label">岗位</view>
+      <view class="value">{{position ? position.title : '加载中...'}}</view>
+    </view>
+
+    <view class="form-item">
+      <view class="label">周次</view>
+      <input type="number" value="{{weekNumber}}" bindinput="onWeekNumberInput" placeholder="请输入周次" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">周报内容</view>
+      <textarea value="{{content}}" bindinput="onContentInput" placeholder="请输入周报内容" maxlength="2000" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">附件（可选）</view>
+      <button size="mini" bindtap="uploadAttachment">选择文件</button>
+      <view wx:if="{{attachment}}" class="attachment-info">
+        {{attachment.name}}
+      </view>
+    </view>
+
+    <button class="btn-primary submit-btn" bindtap="submitReport">提交周报</button>
+  </view>
+</view>
+

@@ -1,0 +1,22 @@
+<view class="container">
+  <view wx:for="{{checkins}}" wx:key="id" class="card checkin-card">
+    <view class="header">
+      <view class="date">{{item.checkin_date}}</view>
+      <view class="status {{item.status}}">
+        {{item.status === 'normal' ? '正常' : '异常'}}
+      </view>
+    </view>
+    <view class="info">
+      <text>岗位：{{item.position_title}}</text>
+    </view>
+    <view class="info">
+      <text>距离：{{item.distance}}米</text>
+    </view>
+    <view class="info">
+      <text>时间：{{item.checkin_time}}</text>
+    </view>
+  </view>
+  
+  <view wx:if="{{checkins.length === 0}}" class="empty">暂无签到记录</view>
+</view>
+

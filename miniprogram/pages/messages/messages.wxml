@@ -1,0 +1,13 @@
+<view class="container">
+  <view wx:for="{{messages}}" wx:key="id" class="card message-card {{item.is_read ? 'read' : 'unread'}}" data-id="{{item.id}}" bindtap="markRead">
+    <view class="header">
+      <view class="title">{{item.title}}</view>
+      <view wx:if="{{!item.is_read}}" class="unread-badge"></view>
+    </view>
+    <view class="content">{{item.content}}</view>
+    <view class="time">{{item.created_at}}</view>
+  </view>
+  
+  <view wx:if="{{messages.length === 0}}" class="empty">暂无消息</view>
+</view>
+

@@ -1,0 +1,31 @@
+<view class="container">
+  <view class="card">
+    <view class="position-info">
+      <view class="title">{{position ? position.title : '加载中...'}}</view>
+      <view class="company">{{position ? position.company_name : ''}}</view>
+    </view>
+    
+    <view class="form-item">
+      <view class="label">申请动机</view>
+      <textarea 
+        value="{{motivation}}" 
+        bindinput="onMotivationInput" 
+        placeholder="请输入申请动机"
+        maxlength="500"
+      />
+    </view>
+    
+    <view class="form-item">
+      <view class="label">简历内容（可选）</view>
+      <textarea 
+        value="{{resume}}" 
+        bindinput="onResumeInput" 
+        placeholder="请输入简历内容"
+        maxlength="1000"
+      />
+    </view>
+    
+    <button class="btn-primary submit-btn" bindtap="submit">提交申请</button>
+  </view>
+</view>
+

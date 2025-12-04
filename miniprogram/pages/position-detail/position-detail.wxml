@@ -1,0 +1,40 @@
+<view class="container">
+  <view wx:if="{{position}}" class="card">
+    <view class="title">{{position.title}}</view>
+    <view class="company">{{position.company_name}}</view>
+    <view class="location">📍 {{position.location}}</view>
+    
+    <view class="section">
+      <view class="section-title">岗位描述</view>
+      <view class="section-content">{{position.description || '暂无描述'}}</view>
+    </view>
+    
+    <view class="section">
+      <view class="section-title">岗位要求</view>
+      <view class="section-content">{{position.requirements || '暂无要求'}}</view>
+    </view>
+    
+    <view class="info-row">
+      <text>薪资：</text>
+      <text>{{position.salary || '面议'}}</text>
+    </view>
+    <view class="info-row">
+      <text>实习时长：</text>
+      <text>{{position.duration || '未指定'}}</text>
+    </view>
+    <view class="info-row">
+      <text>已接收学生：</text>
+      <text>{{position.current_students}}/{{position.max_students}}</text>
+    </view>
+    
+    <button 
+      wx:if="{{!hasApplied && position.status === 'active'}}"
+      class="btn-primary apply-btn"
+      bindtap="apply"
+    >
+      立即申请
+    </button>
+    <view wx:else class="applied-tip">已申请</view>
+  </view>
+</view>
+

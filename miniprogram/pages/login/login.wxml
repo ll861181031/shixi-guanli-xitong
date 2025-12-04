@@ -1,0 +1,14 @@
+<view class="container">
+  <view class="login-card">
+    <view class="title">学生实习信息管理系统</view>
+
+    <view class="form-item">
+      <input placeholder="请输入用户名" value="{{username}}" bindinput="onUsernameInput" />
+    </view>
+    <view class="form-item">
+      <input placeholder="请输入密码" password value="{{password}}" bindinput="onPasswordInput" />
+    </view>
+    <button class="btn-primary" bindtap="handleLogin">登录</button>
+  </view>
+</view>
+

@@ -1,0 +1,47 @@
+.message-card {
+  padding: 30rpx;
+  position: relative;
+}
+
+.message-card.unread {
+  background-color: #f0f9ff;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.unread-badge {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background-color: #f56c6c;
+}
+
+.content {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 15rpx;
+}
+
+.time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.empty {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+}
+

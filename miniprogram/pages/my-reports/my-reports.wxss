@@ -1,0 +1,50 @@
+.report-card {
+  padding: 30rpx;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.title {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.status {
+  padding: 5rpx 15rpx;
+  border-radius: 5rpx;
+  font-size: 24rpx;
+}
+
+.status.reviewed {
+  background-color: #f0f9ff;
+  color: #67c23a;
+}
+
+.status.submitted {
+  background-color: #fef0f0;
+  color: #e6a23c;
+}
+
+.info {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.time {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 10rpx;
+}
+
+.empty {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+}
+
