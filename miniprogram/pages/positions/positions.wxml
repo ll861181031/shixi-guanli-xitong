@@ -81,6 +81,10 @@
     </view>
   </view>
 
+  <view class="result-summary">
+    共找到 <text class="summary-number">{{totalCount}}</text> 个岗位
+  </view>
+
   <view wx:if="{{loading}}" class="loading">加载中...</view>
 
   <view
@@ -90,7 +94,10 @@
     data-id="{{item.id}}"
     bindtap="navigateToDetail"
   >
-    <view class="title">{{item.title}}</view>
+    <view class="title-row">
+      <view class="title">{{item.title}}</view>
+      <view wx:if="{{item.applied}}" class="applied-tag">已申请</view>
+    </view>
     <view class="company">{{item.company_name}}</view>
     <view class="location">📍 {{item.location}}</view>
     <view class="info-row">
@@ -108,8 +115,49 @@
     <view class="info">
       <text>已接收：{{item.current_students}}/{{item.max_students}}</text>
     </view>
+    <view class="card-actions">
+      <button
+        size="mini"
+        plain
+        data-id="{{item.id}}"
+        catchtap="navigateToDetail"
+      >查看详情</button>
+      <button
+        size="mini"
+        type="primary"
+        plain
+        wx:if="{{item.status === 1 && !item.applied}}"
+        data-id="{{item.id}}"
+        catchtap="applyPosition"
+      >立即申请</button>
+      <button
+        size="mini"
+        plain
+        disabled
+        wx:elif="{{item.applied}}"
+      >已申请</button>
+      <button
+        size="mini"
+        plain
+        disabled
+        wx:else
+      >暂不可申请</button>
+      <button
+        size="mini"
+        plain
+        data-latitude="{{item.latitude}}"
+        data-longitude="{{item.longitude}}"
+        data-name="{{item.location}}"
+        catchtap="openLocation"
+      >地图导航</button>
+    </view>
   </view>
 
   <view wx:if="{{!loading && positions.length === 0}}" class="empty">暂无岗位</view>
+  <view wx:elif="{{hasMore}}" class="loading-more">
+    <text wx:if="{{loadingMore}}">加载中...</text>
+    <text wx:else>上拉加载更多</text>
+  </view>
+  <view wx:elif="{{!hasMore && positions.length > 0}}" class="loading-more">没有更多了</view>
 </view>
 

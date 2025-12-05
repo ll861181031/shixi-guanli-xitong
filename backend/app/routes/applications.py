@@ -3,6 +3,7 @@ from app import db
 from app.models.application import Application
 from app.models.position import Position
 from app.models.message import Message
+from datetime import datetime
 from app.utils.decorators import token_required, role_required
 from app.utils.errors import APIError
 from app.utils.validators import validate_required

@@ -8,22 +8,48 @@
     </view>
   </view>
 
-  <view class="menu card">
-    <view class="menu-item" data-url="/pages/my-applications/my-applications" bindtap="navigateTo">
-      <text>我的申请</text>
-      <text class="arrow">></text>
+  <view class="stats card">
+    <view class="stat-item" data-url="/pages/my-applications/my-applications" bindtap="navigateTo">
+      <view class="stat-value">
+        <text class="status-tag status-{{applicationStatusType}}">{{applicationStatusText}}</text>
+        <text class="status-desc">{{applicationStatusDesc}}</text>
+      </view>
+      <view class="stat-label">申请状态</view>
     </view>
-    <view class="menu-item" data-url="/pages/checkin-history/checkin-history" bindtap="navigateTo">
-      <text>签到记录</text>
-      <text class="arrow">></text>
+    <view class="stat-item" data-url="/pages/checkin-history/checkin-history" bindtap="navigateTo">
+      <view class="stat-value">{{stats.checkinCount}}</view>
+      <view class="stat-label">签到次数</view>
+    </view>
+    <view class="stat-item" data-url="/pages/my-reports/my-reports" bindtap="navigateTo">
+      <view class="stat-value">{{stats.reportCount}}</view>
+      <view class="stat-label">周报数量</view>
+    </view>
+  </view>
+
+  <view class="menu card">
+    <view class="menu-item" data-url="/pages/positions/positions" bindtap="navigateTo">
+      <text class="icon">📋</text>
+      <text>查看岗位</text>
+    </view>
+    <view class="menu-item" data-url="/pages/my-applications/my-applications" bindtap="navigateTo">
+      <text class="icon">📝</text>
+      <text>我的申请</text>
+    </view>
+    <view class="menu-item" data-url="/pages/checkin/checkin" bindtap="navigateTo">
+      <text class="icon">📍</text>
+      <text>签到</text>
+    </view>
+    <view class="menu-item" data-url="/pages/weekly-report/weekly-report" bindtap="navigateTo">
+      <text class="icon">📄</text>
+      <text>提交周报</text>
     </view>
     <view class="menu-item" data-url="/pages/my-reports/my-reports" bindtap="navigateTo">
+      <text class="icon">📊</text>
       <text>我的周报</text>
-      <text class="arrow">></text>
     </view>
     <view class="menu-item" data-url="/pages/messages/messages" bindtap="navigateTo">
-      <text>消息通知</text>
-      <text class="arrow">></text>
+      <text class="icon">💬</text>
+      <text>消息<text wx:if="{{stats.unreadMessages > 0}}" class="badge">{{stats.unreadMessages}}</text></text>
     </view>
   </view>
 

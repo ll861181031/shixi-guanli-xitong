@@ -2,13 +2,17 @@
   display: flex;
   align-items: center;
   padding: 40rpx;
+  border-radius: 20rpx;
+  background: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 20rpx;
 }
 
 .avatar {
   width: 120rpx;
   height: 120rpx;
   border-radius: 50%;
-  background-color: #409eff;
+  background: linear-gradient(135deg, #409eff, #69b7ff);
   color: #fff;
   display: flex;
   align-items: center;
@@ -55,5 +59,121 @@
   margin: 40rpx auto;
   background-color: #f56c6c;
   color: #fff;
+}
+
+.stats {
+  display: flex;
+  padding: 30rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 20rpx;
+}
+
+.stat-item {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.stat-item + .stat-item {
+  border-left: 1rpx solid #f0f0f0;
+  padding-left: 16rpx;
+}
+
+.stat-value {
+  font-size: 40rpx;
+  font-weight: bold;
+  margin-bottom: 6rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+}
+
+.status-desc {
+  margin-left: 0;
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #999;
+  text-align: center;
+}
+
+.status-default {
+  background: #f4f4f5;
+  color: #909399;
+}
+
+.status-success {
+  background: #e7f6ee;
+  color: #2aa515;
+}
+
+.status-warning {
+  background: #fff7e6;
+  color: #e6a23c;
+}
+
+.status-danger {
+  background: #fde2e2;
+  color: #f56c6c;
+}
+
+.menu {
+  padding: 20rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  justify-content: flex-start;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item .icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.badge {
+  display: inline-block;
+  background-color: #f56c6c;
+  color: #fff;
+  font-size: 20rpx;
+  padding: 2rpx 8rpx;
+  border-radius: 10rpx;
+  margin-left: 10rpx;
+}
+
+/* 兼容通用 card 样式（如果全局未定义） */
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 20rpx;
 }
 

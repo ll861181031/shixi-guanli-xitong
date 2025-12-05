@@ -38,17 +38,16 @@ Page({
     try {
       // 获取申请状态
       const appRes = await api.get('/applications', { per_page: 1 })
-      if (appRes.success && appRes.data.items.length > 0) {
-        this.setData({
-          'stats.applicationStatus': appRes.data.items[0].status
-        })
-      }
+      const appItems = appRes?.data?.data?.items || []
+      this.setData({
+        'stats.applicationStatus': appItems[0]?.status || ''
+      })
 
       // 获取签到统计
       const checkinRes = await api.get('/checkins/statistics')
       if (checkinRes.success) {
         this.setData({
-          'stats.checkinCount': checkinRes.data.data.total || 0
+          'stats.checkinCount': checkinRes.data?.data?.total || 0
         })
       }
 
@@ -56,7 +55,7 @@ Page({
       const reportRes = await api.get('/weekly-reports', { per_page: 1 })
       if (reportRes.success) {
         this.setData({
-          'stats.reportCount': reportRes.data.data.total || 0
+          'stats.reportCount': reportRes.data?.data?.total || 0
         })
       }
 
@@ -64,7 +63,7 @@ Page({
       const msgRes = await api.get('/users/messages', { is_read: false, per_page: 1 })
       if (msgRes.success) {
         this.setData({
-          'stats.unreadMessages': msgRes.data.data.total || 0
+          'stats.unreadMessages': msgRes.data?.data?.total || 0
         })
       }
     } catch (error) {

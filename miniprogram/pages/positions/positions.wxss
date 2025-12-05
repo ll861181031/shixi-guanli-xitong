@@ -78,6 +78,20 @@
   margin-bottom: 10rpx;
 }
 
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.applied-tag {
+  padding: 4rpx 12rpx;
+  font-size: 22rpx;
+  color: #1677ff;
+  background-color: #e8f3ff;
+  border-radius: 999rpx;
+}
+
 .salary-slider {
   margin: 10rpx 0;
 }
@@ -114,6 +128,17 @@
   margin-top: 10rpx;
 }
 
+.result-summary {
+  padding: 20rpx 30rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.summary-number {
+  color: #1677ff;
+  font-weight: bold;
+}
+
 .status-tag {
   padding: 4rpx 14rpx;
   border-radius: 999rpx;
@@ -133,5 +158,23 @@
 .status-2 {
   background-color: #fff7e6;
   color: #e6a23c;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+.card-actions button {
+  flex: 1;
+}
+
+.loading-more {
+  text-align: center;
+  padding: 20rpx;
+  color: #999;
+  font-size: 24rpx;
 }
 

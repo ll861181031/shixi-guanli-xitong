@@ -1,4 +1,5 @@
 const api = require('../../utils/api')
+const app = getApp()
 
 const SALARY_MIN = 0
 const SALARY_MAX = 20000
@@ -53,6 +54,7 @@ Page({
   data: {
     positions: [],
     loading: false,
+    loadingMore: false,
     keyword: '',
     locationOptions: ['全部'],
     selectedLocationIndex: 0,
@@ -69,12 +71,38 @@ Page({
       step: SALARY_STEP
     },
     durationOptions: DURATION_OPTIONS,
-    statusOptions: STATUS_OPTIONS
+    statusOptions: STATUS_OPTIONS,
+    page: 1,
+    perPage: 10,
+    hasMore: true,
+    totalCount: 0,
+    appliedPositionIds: []
   },
 
   onLoad() {
     this.loadLocations()
-    this.loadPositions()
+    this.loadAppliedPositions().then(() => {
+      this.loadPositions(true)
+    })
+  },
+
+  async loadAppliedPositions() {
+    if (!app.globalData.token) {
+      this.setData({ appliedPositionIds: [] })
+      return
+    }
+    try {
+      // 拉取当前用户的全部申请（学生端已做鉴权，只返回自己的）
+      const res = await api.get('/applications', { per_page: 200 })
+      if (res.success) {
+        const items = res.data?.data?.items || res.data?.items || []
+        const ids = items.map(i => i.position_id)
+        this.setData({ appliedPositionIds: ids })
+      }
+    } catch (error) {
+      console.warn('加载已申请岗位失败:', error)
+      this.setData({ appliedPositionIds: [] })
+    }
   },
 
   async loadLocations() {
@@ -96,7 +124,7 @@ Page({
   },
 
   onPullDownRefresh() {
-    this.loadPositions().finally(() => {
+    this.loadPositions(true).finally(() => {
       wx.stopPullDownRefresh()
     })
   },
@@ -127,18 +155,48 @@ Page({
     return params
   },
 
-  async loadPositions() {
-    this.setData({ loading: true })
+  async loadPositions(reset = false) {
+    if (this.data.loading || this.data.loadingMore) {
+      return
+    }
+
+    const nextPage = reset ? 1 : this.data.page
+    this.setData({
+      loading: reset,
+      loadingMore: !reset
+    })
+
     try {
-      const result = await api.get('/positions', this.buildQueryParams())
+      const params = this.buildQueryParams()
+      params.page = nextPage
+      params.per_page = this.data.perPage
+      const result = await api.get('/positions', params)
       if (result.success) {
-        const list = (result.data.items || []).map(decoratePosition)
-        this.setData({ positions: list })
+        const payload = result.data || {}
+        const items = Array.isArray(payload.items) ? payload.items : []
+        const list = items.map(decoratePosition)
+        const withApplied = list.map(p => ({
+          ...p,
+          applied: this.data.appliedPositionIds.includes(p.id)
+        }))
+        const merged = reset ? list : this.data.positions.concat(list)
+        const total = typeof payload.total === 'number' ? payload.total : merged.length
+        const totalPages = payload.pages || Math.ceil(total / this.data.perPage) || 1
+        const nextHasMore = nextPage < totalPages
+        this.setData({
+          positions: reset ? withApplied : this.data.positions.concat(withApplied),
+          page: nextPage + 1,
+          hasMore: nextHasMore,
+          totalCount: total
+        })
       }
     } catch (error) {
       console.error('加载岗位失败:', error)
     } finally {
-      this.setData({ loading: false })
+      this.setData({
+        loading: false,
+        loadingMore: false
+      })
     }
   },
 
@@ -147,11 +205,11 @@ Page({
   },
 
   onSearch() {
-    this.loadPositions()
+    this.loadPositions(true)
   },
 
   applyFilters() {
-    this.loadPositions()
+    this.loadPositions(true)
   },
 
   resetFilters() {
@@ -166,7 +224,7 @@ Page({
         status: ''
       }
     }, () => {
-      this.loadPositions()
+      this.loadPositions(true)
     })
   },
 
@@ -213,6 +271,82 @@ Page({
     const id = e.currentTarget.dataset.id
     wx.navigateTo({
       url: `/pages/position-detail/position-detail?id=${id}`
+    })
+  },
+
+  async applyPosition(e) {
+    const id = e.currentTarget.dataset.id
+    if (!app.globalData.token) {
+      wx.showToast({ title: '请先登录', icon: 'none' })
+      wx.navigateTo({ url: '/pages/login/login' })
+      return
+    }
+    if (!app.globalData.user?.student_id) {
+      wx.showModal({
+        title: '提示',
+        content: '请先绑定学号',
+        showCancel: false,
+        success: () => {
+          wx.navigateTo({ url: '/pages/profile/profile' })
+        }
+      })
+      return
+    }
+
+    try {
+      wx.showLoading({ title: '提交中...' })
+      const result = await api.post('/applications', {
+        position_id: id,
+        motivation: '希望获得实习机会'
+      })
+      wx.hideLoading()
+      if (result.success) {
+        wx.showToast({ title: '申请成功', icon: 'success' })
+        // 标记本地已申请，避免重复点击
+        const updated = this.data.positions.map(p => p.id === id ? { ...p, applied: true } : p)
+        this.setData({
+          positions: updated,
+          appliedPositionIds: Array.from(new Set([...this.data.appliedPositionIds, id]))
+        })
+      }
+    } catch (error) {
+      wx.hideLoading()
+      const message = error?.message || error?.data?.message || '申请失败'
+      wx.showToast({ title: message, icon: 'none' })
+      // 如果后端返回已申请，也同步前端状态
+      if (message.includes('已申请')) {
+        const updated = this.data.positions.map(p => p.id === id ? { ...p, applied: true } : p)
+        this.setData({
+          positions: updated,
+          appliedPositionIds: Array.from(new Set([...this.data.appliedPositionIds, id]))
+        })
+      }
+    }
+  },
+
+  onReachBottom() {
+    if (!this.data.hasMore || this.data.loadingMore) {
+      return
+    }
+    this.loadPositions()
+  },
+
+  openLocation(e) {
+    const { latitude, longitude, name } = e.currentTarget.dataset
+    const lat = Number(latitude)
+    const lng = Number(longitude)
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+      wx.showToast({
+        title: '暂无法获取位置',
+        icon: 'none'
+      })
+      return
+    }
+    wx.openLocation({
+      latitude: lat,
+      longitude: lng,
+      name: name || '岗位位置',
+      scale: 16
     })
   }
 })
