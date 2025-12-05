@@ -56,6 +56,7 @@ Page({
     loading: false,
     loadingMore: false,
     keyword: '',
+    showFilters: true,
     locationOptions: ['全部'],
     selectedLocationIndex: 0,
     filters: {
@@ -226,6 +227,10 @@ Page({
     }, () => {
       this.loadPositions(true)
     })
+  },
+
+  toggleFilters() {
+    this.setData({ showFilters: !this.data.showFilters })
   },
 
   onLocationChange(e) {

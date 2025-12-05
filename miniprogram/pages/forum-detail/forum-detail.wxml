@@ -1,0 +1,45 @@
+<view class="container">
+  <view wx:if="{{post}}" class="card">
+    <view class="title">{{post.title}}</view>
+    <view class="meta">
+      <text>{{post.author_name || '匿名'}}</text>
+      <text class="dot">·</text>
+      <text>{{post.created_at}}</text>
+      <text class="dot">·</text>
+      <text class="tag">{{post.category_name}}</text>
+    </view>
+    <view class="content">{{post.content}}</view>
+
+    <view wx:if="{{post.images && post.images.length}}" class="images">
+      <block wx:for="{{post.images}}" wx:key="*this">
+        <image src="{{item}}" mode="aspectFill" data-src="{{item}}" bindtap="previewImage" />
+      </block>
+    </view>
+
+    <view class="actions">
+      <button size="mini" bindtap="likePost">👍 {{post.like_count || 0}}</button>
+      <view class="metric">💬 {{post.comment_count || 0}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">评论</view>
+    <view wx:if="{{comments.length === 0}}" class="empty">暂无评论</view>
+    <view wx:for="{{comments}}" wx:key="id" class="comment">
+      <view class="comment-meta">
+        <text>{{item.user_name || '匿名'}}</text>
+        <text class="dot">·</text>
+        <text>{{item.created_at}}</text>
+      </view>
+      <view class="comment-content">{{item.content}}</view>
+    </view>
+    <view class="load-more" wx:if="{{loadingComments}}">加载中...</view>
+    <view class="load-more" wx:if="{{!hasMore && comments.length>0}}">没有更多了</view>
+  </view>
+
+  <view class="comment-bar">
+    <input placeholder="说点什么 (1-200字)" maxlength="200" value="{{commentInput}}" bindinput="onCommentInput" />
+    <button size="mini" bindtap="submitComment">发送</button>
+  </view>
+</view>
+

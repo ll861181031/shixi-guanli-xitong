@@ -54,6 +54,24 @@
   padding: 20rpx;
 }
 
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  margin-bottom: 10rpx;
+}
+
+.filter-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.toggle-btn {
+  margin-right: 0rpx;
+}
+
 .filter-row {
   margin-bottom: 20rpx;
 }

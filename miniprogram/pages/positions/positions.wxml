@@ -4,7 +4,12 @@
     <button size="mini" bindtap="onSearch">搜索</button>
   </view>
 
-  <view class="filter-panel card">
+  <view class="filter-header card">
+    <view class="filter-title">筛选条件</view>
+    <button class="toggle-btn" size="mini" bindtap="toggleFilters">{{showFilters ? '收起' : '展开'}}</button>
+  </view>
+
+  <view wx:if="{{showFilters}}" class="filter-panel card">
     <view class="filter-row">
       <view class="filter-label">地点</view>
       <picker

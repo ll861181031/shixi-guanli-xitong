@@ -11,7 +11,7 @@ Page({
     // 检查是否已登录
     if (app.globalData.token) {
       wx.switchTab({
-        url: '/pages/index/index'
+        url: '/pages/forum/forum'
       })
     }
   },
@@ -48,9 +48,9 @@ Page({
 
         setTimeout(() => {
           wx.switchTab({
-            url: '/pages/index/index'
+            url: '/pages/forum/forum'
           })
-        }, 1000)
+        }, 300)
       }
     } catch (error) {
       wx.hideLoading()

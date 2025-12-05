@@ -35,6 +35,7 @@ def create_app(config_name='default'):
     from app.routes.weekly_reports import weekly_reports_bp
     from app.routes.statistics import statistics_bp
     from app.routes.users import users_bp
+    from app.routes.forum import forum_bp
     
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(positions_bp, url_prefix='/api/positions')
@@ -43,6 +44,7 @@ def create_app(config_name='default'):
     app.register_blueprint(weekly_reports_bp, url_prefix='/api/weekly-reports')
     app.register_blueprint(statistics_bp, url_prefix='/api/statistics')
     app.register_blueprint(users_bp, url_prefix='/api/users')
+    app.register_blueprint(forum_bp, url_prefix='/api/forum')
     
     # 注册错误处理
     from app.utils.errors import register_error_handlers

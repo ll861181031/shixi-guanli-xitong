@@ -1,0 +1,35 @@
+<view class="container">
+  <view class="search-bar">
+    <input placeholder="搜索帖子（标题/内容）" value="{{keyword}}" bindinput="onSearchInput" bindconfirm="onSearchConfirm" confirm-type="search" />
+  </view>
+
+  <scroll-view class="category-bar" scroll-x="true">
+    <view class="category" wx:for="{{categories}}" wx:key="id" data-id="{{item.id}}" bindtap="onCategoryTap" wx:class="{{item.id === activeCategoryId ? 'active' : ''}}">
+      {{item.name}}
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{posts.length === 0 && !loading}}" class="empty">{{emptyText}}</view>
+
+  <view wx:for="{{posts}}" wx:key="id" class="card post-card" data-id="{{item.id}}" bindtap="goToDetail">
+    <view class="post-title">{{item.title}}</view>
+    <view class="post-meta">
+      <text class="author">{{item.author_name || '匿名'}}</text>
+      <text class="dot">·</text>
+      <text class="time">{{item.created_at}}</text>
+      <text class="dot">·</text>
+      <text class="category-tag">{{item.category_name}}</text>
+    </view>
+    <view class="post-summary">{{item.summary || '...'}}</view>
+    <view class="post-footer">
+      <view class="metric">👍 {{item.like_count}}</view>
+      <view class="metric">💬 {{item.comment_count}}</view>
+    </view>
+  </view>
+
+  <view class="load-more" wx:if="{{loading}}">加载中...</view>
+  <view class="load-more" wx:if="{{!hasMore && posts.length>0}}">没有更多了</view>
+
+  <view class="fab" bindtap="goToPublish">发布</view>
+</view>
+

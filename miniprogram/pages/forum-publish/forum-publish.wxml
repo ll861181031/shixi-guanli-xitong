@@ -1,0 +1,36 @@
+<view class="container">
+  <view class="form-item">
+    <view class="label">标题（5-50字）</view>
+    <input placeholder="请输入标题" value="{{form.title}}" data-field="title" bindinput="onInput" />
+  </view>
+
+  <view class="form-item">
+    <view class="label">分类</view>
+    <picker range="{{categories}}" range-key="name" bindchange="onCategoryChange">
+      <view class="picker">
+        {{categoryName || '请选择'}}
+      </view>
+    </picker>
+  </view>
+
+  <view class="form-item">
+    <view class="label">内容（≥20字）</view>
+    <textarea placeholder="请输入内容" value="{{form.content}}" data-field="content" bindinput="onInput" maxlength="5000" />
+  </view>
+
+  <view class="form-item">
+    <view class="label">图片（最多3张，单张≤5MB）</view>
+    <view class="images">
+      <block wx:for="{{form.images}}" wx:key="*this">
+        <view class="img-wrap">
+          <image src="{{item}}" mode="aspectFill" />
+          <view class="close" data-idx="{{index}}" bindtap="removeImage">×</view>
+        </view>
+      </block>
+      <view class="img-add" wx:if="{{form.images.length < 3}}" bindtap="chooseImages">+</view>
+    </view>
+  </view>
+
+  <button class="btn-primary" loading="{{loading}}" bindtap="submit">发布</button>
+</view>
+

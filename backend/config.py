@@ -28,6 +28,13 @@ class Config:
     CHECKIN_WORKDAY_START = '09:00'  # 签到开始时间
     CHECKIN_WORKDAY_END = '18:00'    # 签到结束时间
     CHECKIN_ALLOW_MULTIPLE = False   # 每日是否允许多次签到
+
+    # 论坛配置
+    FORUM_PAGE_SIZE = 20
+    FORUM_MAX_IMAGES = 3
+    FORUM_MAX_IMAGE_SIZE_MB = 5
+    FORUM_SENSITIVE_CHECK_ENABLED = False  # 可接入敏感词服务时置为True
+    FORUM_SENSITIVE_WORDS = []
     
     # 微信小程序配置
     WX_APPID = os.environ.get('WX_APPID') or ''

@@ -40,6 +40,15 @@
           <el-icon><User /></el-icon>
           <span>用户管理</span>
         </el-menu-item>
+        <el-sub-menu v-if="canAccess('forum')" index="/forum">
+          <template #title>
+            <el-icon><Document /></el-icon>
+            <span>论坛管理</span>
+          </template>
+          <el-menu-item index="/forum/posts">帖子</el-menu-item>
+          <el-menu-item index="/forum/comments">评论</el-menu-item>
+          <el-menu-item index="/forum/categories">分类</el-menu-item>
+        </el-sub-menu>
       </el-menu>
     </el-aside>
     <el-container>

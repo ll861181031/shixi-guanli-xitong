@@ -41,14 +41,13 @@ Page({
   async loadPosition(id) {
     try {
       const result = await api.get(`/positions/${id}`)
-      if (result.success) {
-        const position = result.data.data
-        position.salaryText = formatSalaryText(position)
-        position.durationText = position.internship_duration || '未指定'
-        position.statusText = STATUS_TEXT[position.status] || '未知状态'
-        position.canApply = position.status === 1
-        this.setData({ position })
-      }
+      const position = result?.data?.data || result?.data || result
+      if (!position) return
+      position.salaryText = formatSalaryText(position)
+      position.durationText = position.internship_duration || '未指定'
+      position.statusText = STATUS_TEXT[position.status] || '未知状态'
+      position.canApply = position.status === 1
+      this.setData({ position })
     } catch (error) {
       console.error('加载岗位详情失败:', error)
     }
@@ -57,7 +56,8 @@ Page({
   async checkApplication(positionId) {
     try {
       const result = await api.get('/applications', { position_id: positionId })
-      if (result.success && result.data.items.length > 0) {
+      const items = result?.data?.items || result?.data?.data?.items || []
+      if (items.length > 0) {
         this.setData({ hasApplied: true })
       }
     } catch (error) {

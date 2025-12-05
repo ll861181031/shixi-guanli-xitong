@@ -55,6 +55,24 @@ const routes = [
         name: 'Users',
         component: () => import('@/views/Users.vue'),
         meta: { title: '用户管理', requiresAdmin: true }
+      },
+      {
+        path: 'forum/posts',
+        name: 'ForumPosts',
+        component: () => import('@/views/ForumPosts.vue'),
+        meta: { title: '论坛帖子', permission: 'forum' }
+      },
+      {
+        path: 'forum/comments',
+        name: 'ForumComments',
+        component: () => import('@/views/ForumComments.vue'),
+        meta: { title: '论坛评论', permission: 'forum' }
+      },
+      {
+        path: 'forum/categories',
+        name: 'ForumCategories',
+        component: () => import('@/views/ForumCategories.vue'),
+        meta: { title: '论坛分类', permission: 'forum' }
       }
     ]
   }

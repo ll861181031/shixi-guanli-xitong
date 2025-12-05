@@ -1,5 +1,8 @@
 {
   "pages": [
+    "pages/forum/forum",
+    "pages/forum-detail/forum-detail",
+    "pages/forum-publish/forum-publish",
     "pages/login/login",
     "pages/index/index",
     "pages/positions/positions",
@@ -27,7 +30,7 @@
     "backgroundColor": "#ffffff",
     "list": [
       {
-        "pagePath": "pages/index/index",
+        "pagePath": "pages/forum/forum",
         "iconPath": "images/home.png",
         "selectedIconPath": "images/home-active.png",
         "text": "首页"
