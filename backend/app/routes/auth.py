@@ -32,6 +32,12 @@ def login():
         if user.role not in ['admin', 'teacher']:
             raise APIError('该账号无权访问管理端', 403, 'INSUFFICIENT_PERMISSIONS')
         
+        if user.status == 0:
+            raise APIError('账号已被禁用', 403, 'USER_DISABLED')
+        
+        if user.status == 0:
+            raise APIError('账号已被禁用', 403, 'USER_DISABLED')
+        
         token = generate_token(user.id, user.role)
         
         return jsonify({
@@ -200,6 +206,9 @@ def student_login():
         user = User.query.filter_by(username=username).first()
         if not user or user.role != 'student' or not user.check_password(password):
             raise APIError('用户名或密码错误', 401, 'INVALID_CREDENTIALS')
+        
+        if user.status == 0:
+            raise APIError('账号已被禁用', 403, 'USER_DISABLED')
 
         token = generate_token(user.id, user.role)
 

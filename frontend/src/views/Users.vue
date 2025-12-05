@@ -11,20 +11,43 @@
               <el-option label="管理员" value="admin" />
               <el-option label="全部" value="all" />
             </el-select>
-            <el-button
-              v-if="isAdmin"
-              type="primary"
-              size="small"
-              style="margin-left: 10px"
-              @click="openCreateDialog"
-            >
-              新增用户
-            </el-button>
+            <template v-if="isAdmin">
+              <el-button
+                type="primary"
+                size="small"
+                style="margin-left: 10px"
+                @click="openCreateDialog"
+              >
+                新增用户
+              </el-button>
+              <el-button
+                size="small"
+                style="margin-left: 10px"
+                :disabled="selectedUserIds.length === 0"
+                @click="handleBatchStatus(1)"
+              >
+                批量启用
+              </el-button>
+              <el-button
+                size="small"
+                type="danger"
+                :disabled="selectedUserIds.length === 0"
+                @click="handleBatchStatus(0)"
+              >
+                批量禁用
+              </el-button>
+            </template>
           </div>
         </div>
       </template>
       
-      <el-table :data="users" v-loading="loading" border>
+      <el-table
+        :data="users"
+        v-loading="loading"
+        border
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55" />
         <el-table-column prop="username" label="用户名" />
         <el-table-column prop="real_name" label="真实姓名" />
         <el-table-column prop="student_id" label="学号" />
@@ -52,6 +75,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="credit_score" label="信用分" width="90" />
+        <el-table-column prop="status" label="状态" width="100">
+          <template #default="{ row }">
+            <el-tag :type="row.status === 1 ? 'success' : 'info'">
+              {{ row.status === 1 ? '启用' : '禁用' }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="created_at" label="创建时间" />
       </el-table>
       
@@ -131,6 +161,7 @@ const roleFilter = ref('student')
 const dialogVisible = ref(false)
 const dialogTitle = ref('新增用户')
 const formRef = ref(null)
+const selectedUserIds = ref([])
 
 const authStore = useAuthStore()
 const isAdmin = computed(() => authStore.user?.role === 'admin')
@@ -266,6 +297,28 @@ async function submitUser() {
       submitLoading.value = false
     }
   })
+}
+
+function handleSelectionChange(selection) {
+  selectedUserIds.value = selection.map(item => item.id)
+}
+
+async function handleBatchStatus(status) {
+  if (!selectedUserIds.value.length) {
+    ElMessage.warning('请选择用户')
+    return
+  }
+  try {
+    await api.post('/users/batch-status', {
+      ids: selectedUserIds.value,
+      status
+    })
+    ElMessage.success(status === 1 ? '批量启用成功' : '批量禁用成功')
+    selectedUserIds.value = []
+    fetchUsers()
+  } catch (error) {
+    ElMessage.error(error.response?.data?.message || '批量操作失败')
+  }
 }
 
 onMounted(() => {

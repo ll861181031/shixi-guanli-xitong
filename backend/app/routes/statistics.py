@@ -25,7 +25,7 @@ def get_overview():
         
         # 岗位总数
         total_positions = Position.query.count()
-        active_positions = Position.query.filter_by(status='active').count()
+        active_positions = Position.query.filter_by(status=1).count()
         
         # 申请总数
         total_applications = Application.query.count()
@@ -196,32 +196,123 @@ def get_position_distribution():
 @statistics_bp.route('/checkin-trend', methods=['GET'])
 @role_required('admin', 'teacher')
 def get_checkin_trend():
-    """获取签到趋势（按日期）"""
+    """获取签到趋势（按日期/周）"""
     try:
         days = request.args.get('days', 30, type=int)
+        group_by = request.args.get('group_by', 'day')
+        if group_by not in ['day', 'week']:
+            raise APIError('group_by参数无效', 400, 'INVALID_GROUP_BY')
+        
         end_date = datetime.now().date()
         start_date = end_date - timedelta(days=days)
         
-        # 按日期统计签到数量
+        if group_by == 'week':
+            label_expr = func.date_format(CheckIn.checkin_date, '%x-第%v周')
+        else:
+            label_expr = CheckIn.checkin_date
+        
         checkins = db.session.query(
-            CheckIn.checkin_date,
+            label_expr.label('label'),
             func.count(CheckIn.id).label('count')
         ).filter(
             CheckIn.checkin_date >= start_date,
             CheckIn.checkin_date <= end_date
-        ).group_by(CheckIn.checkin_date).all()
+        ).group_by('label').order_by('label').all()
         
         trend_data = [{
-            'date': str(date),
+            'label': str(label),
             'count': count
-        } for date, count in checkins]
+        } for label, count in checkins]
         
         return jsonify({
             'success': True,
             'data': trend_data
         }), 200
         
+    except APIError as e:
+        raise e
     except Exception as e:
         logger.error(f"Get checkin trend error: {str(e)}", exc_info=True)
         raise APIError('获取签到趋势失败', 500)
+
+
+@statistics_bp.route('/weekly-report-rate', methods=['GET'])
+@role_required('admin')
+def get_weekly_report_rate():
+    """获取周报提交率（按岗位/学生）"""
+    try:
+        group_by = request.args.get('group_by', 'position')
+        total_weeks = request.args.get('total_weeks', 12, type=int)
+        
+        if group_by not in ['position', 'student']:
+            raise APIError('group_by参数无效', 400, 'INVALID_GROUP_BY')
+        
+        if group_by == 'position':
+            positions = {
+                pos.id: pos.title
+                for pos in Position.query.with_entities(Position.id, Position.title).all()
+            }
+            
+            approved_totals = dict(
+                db.session.query(
+                    Application.position_id,
+                    func.count(Application.student_id)
+                ).filter(
+                    Application.status == 'approved'
+                ).group_by(Application.position_id).all()
+            )
+            
+            submitted_totals = dict(
+                db.session.query(
+                    WeeklyReport.position_id,
+                    func.count(func.distinct(WeeklyReport.student_id))
+                ).group_by(WeeklyReport.position_id).all()
+            )
+            
+            result = []
+            for position_id, title in positions.items():
+                total_students = approved_totals.get(position_id, 0)
+                submitted_students = submitted_totals.get(position_id, 0)
+                if total_students == 0 and submitted_students == 0:
+                    continue
+                rate = (submitted_students / total_students * 100) if total_students > 0 else 0
+                result.append({
+                    'label': title,
+                    'position_id': position_id,
+                    'submitted_students': submitted_students,
+                    'total_students': total_students,
+                    'rate': round(rate, 2)
+                })
+        else:
+            students = User.query.filter_by(role='student').all()
+            result = []
+            for student in students:
+                application = Application.query.filter_by(
+                    student_id=student.id,
+                    status='approved'
+                ).first()
+                if not application:
+                    continue
+                report_count = WeeklyReport.query.filter_by(
+                    student_id=student.id,
+                    position_id=application.position_id
+                ).count()
+                rate = (report_count / total_weeks * 100) if total_weeks > 0 else 0
+                result.append({
+                    'label': student.real_name or student.username,
+                    'student_id': student.id,
+                    'report_count': report_count,
+                    'rate': round(rate, 2)
+                })
+        
+        return jsonify({
+            'success': True,
+            'data': result
+        }), 200
+        
+    except APIError as e:
+        raise e
+    except Exception as e:
+        logger.error(f"Get weekly report rate error: {str(e)}", exc_info=True)
+        raise APIError('获取周报提交率失败', 500)
 

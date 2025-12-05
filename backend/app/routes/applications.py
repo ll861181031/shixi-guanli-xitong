@@ -13,6 +13,44 @@ logger = logging.getLogger(__name__)
 
 applications_bp = Blueprint('applications', __name__)
 
+
+def _audit_application(application, status, review_comment, reviewer):
+    if status not in ['approved', 'rejected']:
+        raise APIError('状态值不正确', 400, 'INVALID_STATUS')
+    
+    if application.status != 'pending':
+        raise APIError('仅能审核待处理的申请', 400, 'INVALID_APPLICATION_STATUS')
+    
+    if status == 'approved':
+        position = application.position
+        if position.current_students >= position.max_students:
+            raise APIError('该岗位已满员', 400, 'POSITION_FULL')
+        
+        existing_approved = Application.query.filter_by(
+            student_id=application.student_id,
+            status='approved'
+        ).filter(Application.id != application.id).first()
+        
+        if existing_approved:
+            raise APIError('该学生已有已批准的申请', 400, 'HAS_APPROVED_APPLICATION')
+        
+        position.current_students += 1
+    
+    application.status = status
+    application.reviewer_id = reviewer.id
+    application.review_comment = review_comment
+    application.reviewed_at = datetime.utcnow()
+    
+    message = Message(
+        user_id=application.student_id,
+        title='申请审核结果',
+        content=f'您的实习申请已{"通过" if status == "approved" else "拒绝"}',
+        type='application',
+        related_id=application.id
+    )
+    db.session.add(message)
+    return application
+
 @applications_bp.route('', methods=['GET'])
 @token_required
 def get_applications():
@@ -90,8 +128,8 @@ def create_application():
         position_id = data['position_id']
         position = Position.query.get_or_404(position_id)
         
-        if position.status != 'active':
-            raise APIError('该岗位已关闭', 400)
+        if position.status != 1:
+            raise APIError('该岗位暂不可申请', 400, 'POSITION_NOT_OPEN')
         
         # 检查是否已申请
         existing = Application.query.filter_by(
@@ -156,43 +194,9 @@ def review_application(application_id):
         validate_required(data, ['status'])
         
         status = data['status']
-        if status not in ['approved', 'rejected']:
-            raise APIError('状态值不正确', 400)
+        review_comment = data.get('review_comment')
         
-        # 如果批准，检查岗位是否还有名额
-        if status == 'approved':
-            position = application.position
-            if position.current_students >= position.max_students:
-                raise APIError('该岗位已满员', 400, 'POSITION_FULL')
-            
-            # 检查学生是否已有已批准的申请
-            existing_approved = Application.query.filter_by(
-                student_id=application.student_id,
-                status='approved'
-            ).filter(Application.id != application_id).first()
-            
-            if existing_approved:
-                raise APIError('该学生已有已批准的申请', 400)
-            
-            position.current_students += 1
-        
-        application.status = status
-        application.reviewer_id = request.current_user.id
-        application.review_comment = data.get('review_comment')
-        from datetime import datetime
-        application.reviewed_at = datetime.utcnow()
-        
-        db.session.commit()
-        
-        # 发送消息给学生
-        message = Message(
-            user_id=application.student_id,
-            title='申请审核结果',
-            content=f'您的实习申请已{("通过" if status == "approved" else "拒绝")}',
-            type='application',
-            related_id=application.id
-        )
-        db.session.add(message)
+        _audit_application(application, status, review_comment, request.current_user)
         db.session.commit()
         
         return jsonify({
@@ -207,4 +211,42 @@ def review_application(application_id):
         db.session.rollback()
         logger.error(f"Review application error: {str(e)}", exc_info=True)
         raise APIError('审核失败', 500)
+
+
+@applications_bp.route('/batch-audit', methods=['POST'])
+@role_required('admin')
+def batch_audit_applications():
+    """批量审核申请"""
+    try:
+        data = request.get_json() or {}
+        ids = data.get('ids')
+        status = data.get('status')
+        review_comment = data.get('review_comment')
+        if not isinstance(ids, list) or not ids:
+            raise APIError('请选择需要审核的申请', 400, 'INVALID_IDS')
+        
+        applications = Application.query.filter(Application.id.in_(ids)).all()
+        if not applications:
+            raise APIError('未找到对应申请', 404, 'APPLICATION_NOT_FOUND')
+        
+        app_map = {app.id: app for app in applications}
+        missing = [app_id for app_id in ids if app_id not in app_map]
+        if missing:
+            raise APIError(f'部分申请不存在: {missing}', 404, 'APPLICATION_NOT_FOUND')
+        
+        for application in applications:
+            _audit_application(application, status, review_comment, request.current_user)
+        
+        db.session.commit()
+        return jsonify({
+            'success': True,
+            'message': '批量审核成功',
+            'data': {'updated': ids, 'status': status}
+        }), 200
+    except APIError as e:
+        raise e
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Batch audit applications error: {str(e)}", exc_info=True)
+        raise APIError('批量审核失败', 500)
 

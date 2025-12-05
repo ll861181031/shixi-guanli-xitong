@@ -16,11 +16,15 @@
     
     <view class="info-row">
       <text>薪资：</text>
-      <text>{{position.salary || '面议'}}</text>
+      <text>{{position.salaryText}}</text>
     </view>
     <view class="info-row">
       <text>实习时长：</text>
-      <text>{{position.duration || '未指定'}}</text>
+      <text>{{position.durationText}}</text>
+    </view>
+    <view class="info-row">
+      <text>状态：</text>
+      <text class="status-tag status-{{position.status}}">{{position.statusText}}</text>
     </view>
     <view class="info-row">
       <text>已接收学生：</text>
@@ -28,13 +32,14 @@
     </view>
     
     <button 
-      wx:if="{{!hasApplied && position.status === 'active'}}"
+      wx:if="{{!hasApplied && position.canApply}}"
       class="btn-primary apply-btn"
       bindtap="apply"
     >
       立即申请
     </button>
-    <view wx:else class="applied-tip">已申请</view>
+    <view wx:elif="{{hasApplied}}" class="applied-tip">已申请</view>
+    <view wx:else class="applied-tip warning">暂不可申请</view>
   </view>
 </view>
 

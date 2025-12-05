@@ -11,6 +11,8 @@ from app.utils.validators import validate_required
 from flask import current_app
 import os
 import logging
+from datetime import datetime
+from uuid import uuid4
 
 logger = logging.getLogger(__name__)
 
@@ -163,6 +165,14 @@ def create_weekly_report():
 def upload_attachment():
     """上传周报附件"""
     try:
+        report_id = request.form.get('report_id', type=int)
+        if report_id:
+            report = WeeklyReport.query.get(report_id)
+            if not report:
+                raise APIError('周报不存在', 404, 'REPORT_NOT_FOUND')
+            if report.student_id != request.current_user.id:
+                raise APIError('无权上传该周报附件', 403, 'FORBIDDEN_ATTACHMENT')
+        
         if 'file' not in request.files:
             raise APIError('没有上传文件', 400, 'NO_FILE')
         
@@ -170,27 +180,39 @@ def upload_attachment():
         if file.filename == '':
             raise APIError('文件名为空', 400, 'EMPTY_FILENAME')
         
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            # 添加时间戳避免重名
-            from datetime import datetime
-            timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-            filename = f"{timestamp}_{filename}"
-            
-            upload_folder = current_app.config['UPLOAD_FOLDER']
-            filepath = os.path.join(upload_folder, filename)
-            file.save(filepath)
-            
-            return jsonify({
-                'success': True,
-                'message': '上传成功',
-                'data': {
-                    'attachment_path': filename,
-                    'attachment_name': file.filename
-                }
-            }), 200
-        else:
+        original_name = request.form.get('original_name')
+        provided_filename = (original_name or file.filename or '').strip()
+        if not provided_filename:
+            raise APIError('无法识别的文件名', 400, 'INVALID_FILE_NAME')
+        
+        if not allowed_file(provided_filename):
             raise APIError('文件类型不允许', 400, 'INVALID_FILE_TYPE')
+        
+        safe_original_name = secure_filename(provided_filename)
+        _, ext = os.path.splitext(safe_original_name)
+        timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+        unique_suffix = uuid4().hex[:8]
+        final_filename = f"{timestamp}_{unique_suffix}{ext.lower()}"
+        
+        upload_root = current_app.config['UPLOAD_FOLDER']
+        now = datetime.utcnow()
+        relative_dir = os.path.join('weekly', str(now.year), f"{now.month:02d}")
+        target_dir = os.path.join(upload_root, relative_dir)
+        os.makedirs(target_dir, exist_ok=True)
+        filepath = os.path.join(target_dir, final_filename)
+        file.save(filepath)
+        
+        relative_path = os.path.join(relative_dir, final_filename).replace('\\', '/')
+        display_name = provided_filename or final_filename
+        
+        return jsonify({
+            'success': True,
+            'message': '上传成功',
+            'data': {
+                'attachment_path': relative_path,
+                'attachment_name': display_name
+            }
+        }), 200
         
     except APIError as e:
         raise e

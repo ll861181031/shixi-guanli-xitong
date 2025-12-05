@@ -40,6 +40,29 @@
   margin-bottom: 10rpx;
 }
 
+  .status-tag {
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  background-color: #f4f4f5;
+  color: #606266;
+}
+
+.status-1 {
+  background-color: #e7f6ee;
+  color: #2aa515;
+}
+
+.status-0 {
+  background-color: #f4f4f5;
+  color: #909399;
+}
+
+.status-2 {
+  background-color: #fff7e6;
+  color: #e6a23c;
+}
+
 .apply-btn {
   width: 100%;
   margin-top: 40rpx;
@@ -50,5 +73,9 @@
   color: #999;
   margin-top: 40rpx;
   padding: 20rpx;
+}
+
+.applied-tip.warning {
+  color: #e6a23c;
 }
 

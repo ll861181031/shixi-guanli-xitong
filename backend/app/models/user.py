@@ -14,6 +14,7 @@ class User(db.Model):
     student_id = db.Column(db.String(20), unique=True, nullable=True, comment='学号')
     wx_openid = db.Column(db.String(100), unique=True, nullable=True, comment='微信OpenID')
     role = db.Column(db.String(20), nullable=False, default='student', comment='角色: student/teacher/admin')
+    status = db.Column(db.Integer, nullable=False, default=1, comment='账户状态: 1=启用/0=禁用')
     phone = db.Column(db.String(20), nullable=True, comment='手机号')
     email = db.Column(db.String(100), nullable=True, comment='邮箱')
     credit_score = db.Column(db.Float, default=100.0, comment='信用分')
@@ -57,6 +58,7 @@ class User(db.Model):
             'real_name': self.real_name,
             'student_id': self.student_id,
             'role': self.role,
+            'status': self.status,
             'phone': self.phone,
             'email': self.email,
             'credit_score': self.credit_score,

@@ -49,3 +49,89 @@
   color: #999;
 }
 
+.filter-panel {
+  margin: 0 0 20rpx;
+  padding: 20rpx;
+}
+
+.filter-row {
+  margin-bottom: 20rpx;
+}
+
+.filter-label {
+  font-size: 26rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.picker-value {
+  padding: 18rpx 24rpx;
+  border: 1rpx solid #e5e5e5;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  color: #333;
+}
+
+.salary-display {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.salary-slider {
+  margin: 10rpx 0;
+}
+
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  padding: 8rpx 20rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.chip radio {
+  margin-right: 8rpx;
+}
+
+.chip-active {
+  border-color: #1677ff;
+  color: #1677ff;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20rpx;
+  margin-top: 10rpx;
+}
+
+.status-tag {
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+}
+
+.status-1 {
+  background-color: #e7f6ee;
+  color: #2aa515;
+}
+
+.status-0 {
+  background-color: #f4f4f5;
+  color: #909399;
+}
+
+.status-2 {
+  background-color: #fff7e6;
+  color: #e6a23c;
+}
+

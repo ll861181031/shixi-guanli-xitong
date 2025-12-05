@@ -1,6 +1,30 @@
 const api = require('../../utils/api')
 const app = getApp()
 
+const STATUS_TEXT = {
+  0: '招满',
+  1: '在招',
+  2: '暂停'
+}
+
+function formatSalaryText(position) {
+  if (position.salary_range_text) {
+    return position.salary_range_text
+  }
+  const min = position.min_salary
+  const max = position.max_salary
+  if (typeof min === 'number' && typeof max === 'number') {
+    return `${min}-${max}元/月`
+  }
+  if (typeof min === 'number') {
+    return `≥${min}元/月`
+  }
+  if (typeof max === 'number') {
+    return `≤${max}元/月`
+  }
+  return '面议'
+}
+
 Page({
   data: {
     position: null,
@@ -18,7 +42,12 @@ Page({
     try {
       const result = await api.get(`/positions/${id}`)
       if (result.success) {
-        this.setData({ position: result.data.data })
+        const position = result.data.data
+        position.salaryText = formatSalaryText(position)
+        position.durationText = position.internship_duration || '未指定'
+        position.statusText = STATUS_TEXT[position.status] || '未知状态'
+        position.canApply = position.status === 1
+        this.setData({ position })
       }
     } catch (error) {
       console.error('加载岗位详情失败:', error)
@@ -37,6 +66,14 @@ Page({
   },
 
   async apply() {
+    if (!this.data.position?.canApply) {
+      wx.showToast({
+        title: '该岗位暂不可申请',
+        icon: 'none'
+      })
+      return
+    }
+
     if (!app.globalData.user.student_id) {
       wx.showModal({
         title: '提示',

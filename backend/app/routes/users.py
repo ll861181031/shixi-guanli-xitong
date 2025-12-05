@@ -83,10 +83,14 @@ def get_users():
         per_page = request.args.get('per_page', 10, type=int)
         role = request.args.get('role', 'student')
         keyword = request.args.get('keyword', '')
+        status_filter = request.args.get('status', type=int)
         
         query = User.query
         if role != 'all':
             query = query.filter_by(role=role)
+        
+        if status_filter is not None:
+            query = query.filter_by(status=status_filter)
         
         if keyword:
             from sqlalchemy import or_
@@ -167,6 +171,7 @@ def create_user():
             username=username,
             real_name=real_name,
             role=role,
+            status=data.get('status', 1),
             student_id=student_id if role == 'student' else None,
             phone=data.get('phone'),
             email=data.get('email')
@@ -218,6 +223,12 @@ def update_user(user_id):
         if 'password' in data and data['password']:
             user.set_password(data['password'])
 
+        if 'status' in data:
+            status_value = data['status']
+            if status_value not in [0, 1]:
+                raise APIError('状态值不正确', 400, 'INVALID_STATUS')
+            user.status = status_value
+
         if user.role == 'teacher' and 'permissions' in data:
             user.set_permissions(_normalize_permissions(data.get('permissions')))
 
@@ -230,6 +241,40 @@ def update_user(user_id):
         db.session.rollback()
         logger.error(f"Update user error: {str(e)}", exc_info=True)
         raise APIError('更新用户失败', 500)
+
+@users_bp.route('/batch-status', methods=['POST'])
+@role_required('admin')
+def batch_update_user_status():
+    """批量启用/禁用用户"""
+    try:
+        data = request.get_json() or {}
+        ids = data.get('ids')
+        status = data.get('status')
+        if not isinstance(ids, list) or not ids:
+            raise APIError('请选择需要操作的用户', 400, 'INVALID_IDS')
+        if status not in [0, 1]:
+            raise APIError('状态值不正确', 400, 'INVALID_STATUS')
+        users = User.query.filter(User.id.in_(ids)).all()
+        if not users:
+            raise APIError('未找到对应用户', 404, 'USERS_NOT_FOUND')
+        for user in users:
+            user.status = status
+        db.session.commit()
+        return jsonify({
+            'success': True,
+            'message': '批量更新状态成功',
+            'data': {
+                'updated': [u.id for u in users],
+                'status': status
+            }
+        }), 200
+    except APIError as e:
+        raise e
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Batch update user status error: {str(e)}", exc_info=True)
+        raise APIError('批量更新状态失败', 500)
+
 
 def _normalize_permissions(raw):
     if raw is None:

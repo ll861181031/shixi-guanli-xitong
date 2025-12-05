@@ -12,6 +12,41 @@ logger = logging.getLogger(__name__)
 
 positions_bp = Blueprint('positions', __name__)
 
+ALLOWED_POSITION_STATUSES = {0, 1, 2}
+
+
+def parse_optional_int(value, field_name):
+    if value is None or value == '':
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        raise APIError(f'{field_name}参数无效', 400, f'INVALID_{field_name.upper()}')
+
+
+def normalize_non_negative_int(value, field_name):
+    if value is None or value == '':
+        return None
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError):
+        raise APIError(f'{field_name}必须为整数', 400, f'INVALID_{field_name.upper()}')
+    if parsed < 0:
+        raise APIError(f'{field_name}不能小于0', 400, f'INVALID_{field_name.upper()}')
+    return parsed
+
+
+def validate_position_status(value):
+    if value is None:
+        return
+    if value not in ALLOWED_POSITION_STATUSES:
+        raise APIError('岗位状态无效', 400, 'INVALID_POSITION_STATUS')
+
+
+def validate_salary_range(min_salary, max_salary):
+    if min_salary is not None and max_salary is not None and min_salary > max_salary:
+        raise APIError('最低薪资不能高于最高薪资', 400, 'INVALID_SALARY_RANGE')
+
 @positions_bp.route('', methods=['GET'])
 @token_required
 def get_positions():
@@ -19,16 +54,26 @@ def get_positions():
     try:
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
-        status = request.args.get('status', 'active')
-        keyword = request.args.get('keyword', '')
+        keyword = (request.args.get('keyword') or '').strip()
+        location = request.args.get('location')
+        internship_duration = request.args.get('internship_duration')
+        min_salary = parse_optional_int(request.args.get('min_salary'), 'min_salary')
+        max_salary = parse_optional_int(request.args.get('max_salary'), 'max_salary')
+        status_value = parse_optional_int(request.args.get('status'), 'status')
+        
+        validate_salary_range(min_salary, max_salary)
+        validate_position_status(status_value)
         
         query = Position.query
         
-        # 学生只能看到active的岗位
+        # 学生默认只能看到在招岗位，若明确选择状态则按所选过滤
         if request.current_user.role == 'student':
-            query = query.filter_by(status='active')
-        elif status:
-            query = query.filter_by(status=status)
+            if status_value is None:
+                query = query.filter_by(status=1)
+            else:
+                query = query.filter_by(status=status_value)
+        elif status_value is not None:
+            query = query.filter_by(status=status_value)
         
         # 关键词搜索
         if keyword:
@@ -39,6 +84,18 @@ def get_positions():
                     Position.location.like(f'%{keyword}%')
                 )
             )
+        
+        if location:
+            query = query.filter_by(location=location)
+        
+        if internship_duration:
+            query = query.filter_by(internship_duration=internship_duration)
+        
+        if min_salary is not None:
+            query = query.filter(Position.min_salary >= min_salary)
+        
+        if max_salary is not None:
+            query = query.filter(Position.max_salary <= max_salary)
         
         # 分页
         pagination = query.order_by(Position.created_at.desc()).paginate(
@@ -67,10 +124,6 @@ def get_position(position_id):
     try:
         position = Position.query.get_or_404(position_id)
         
-        # 学生只能查看active的岗位
-        if request.current_user.role == 'student' and position.status != 'active':
-            raise APIError('岗位不存在或已关闭', 404)
-        
         return jsonify({
             'success': True,
             'data': position.to_dict()
@@ -92,6 +145,17 @@ def create_position():
         
         validate_coordinates(data['latitude'], data['longitude'])
         
+        min_salary = normalize_non_negative_int(data.get('min_salary'), 'min_salary')
+        max_salary = normalize_non_negative_int(data.get('max_salary'), 'max_salary')
+        validate_salary_range(min_salary, max_salary)
+        
+        status_raw = data.get('status', 1)
+        try:
+            status_value = int(status_raw)
+        except (TypeError, ValueError):
+            raise APIError('岗位状态格式不正确', 400, 'INVALID_POSITION_STATUS')
+        validate_position_status(status_value)
+        
         position = Position(
             title=data['title'],
             company_name=data['company_name'],
@@ -100,9 +164,11 @@ def create_position():
             location=data['location'],
             latitude=data['latitude'],
             longitude=data['longitude'],
-            salary=data.get('salary'),
-            duration=data.get('duration'),
+            min_salary=min_salary,
+            max_salary=max_salary,
+            internship_duration=data.get('internship_duration'),
             max_students=data.get('max_students', 1),
+            status=status_value,
             publisher_id=request.current_user.id
         )
         
@@ -149,14 +215,29 @@ def update_position(position_id):
             validate_coordinates(data['latitude'], data['longitude'])
             position.latitude = data['latitude']
             position.longitude = data['longitude']
-        if 'salary' in data:
-            position.salary = data.get('salary')
-        if 'duration' in data:
-            position.duration = data.get('duration')
+        if 'min_salary' in data or 'max_salary' in data:
+            min_salary = normalize_non_negative_int(
+                data.get('min_salary', position.min_salary),
+                'min_salary'
+            )
+            max_salary = normalize_non_negative_int(
+                data.get('max_salary', position.max_salary),
+                'max_salary'
+            )
+            validate_salary_range(min_salary, max_salary)
+            position.min_salary = min_salary
+            position.max_salary = max_salary
+        if 'internship_duration' in data:
+            position.internship_duration = data.get('internship_duration')
         if 'max_students' in data:
             position.max_students = data.get('max_students')
         if 'status' in data:
-            position.status = data['status']
+            try:
+                status_value = int(data['status'])
+            except (TypeError, ValueError):
+                raise APIError('岗位状态格式不正确', 400, 'INVALID_POSITION_STATUS')
+            validate_position_status(status_value)
+            position.status = status_value
         
         db.session.commit()
         
@@ -207,4 +288,67 @@ def delete_position(position_id):
         db.session.rollback()
         logger.error(f"Delete position error: {str(e)}", exc_info=True)
         raise APIError('删除岗位失败', 500)
+
+
+@positions_bp.route('/batch-delete', methods=['POST'])
+@role_required('admin')
+def batch_delete_positions():
+    """批量删除岗位"""
+    try:
+        data = request.get_json() or {}
+        ids = data.get('ids')
+        if not isinstance(ids, list) or not ids:
+            raise APIError('请选择要删除的岗位', 400, 'INVALID_IDS')
+        
+        positions = Position.query.filter(Position.id.in_(ids)).all()
+        if not positions:
+            raise APIError('未找到对应岗位', 404, 'POSITION_NOT_FOUND')
+        
+        blocked = []
+        for position in positions:
+            approved_count = Application.query.filter_by(
+                position_id=position.id,
+                status='approved'
+            ).count()
+            if approved_count > 0:
+                blocked.append(position.title)
+        
+        if blocked:
+            raise APIError(f"以下岗位已有已批准申请，无法删除: {', '.join(blocked)}", 400, 'POSITION_HAS_APPROVED')
+        
+        deleted_ids = []
+        for position in positions:
+            deleted_ids.append(position.id)
+            db.session.delete(position)
+        
+        db.session.commit()
+        return jsonify({
+            'success': True,
+            'message': '批量删除成功',
+            'data': {'deleted': deleted_ids}
+        }), 200
+    except APIError as e:
+        raise e
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Batch delete positions error: {str(e)}", exc_info=True)
+        raise APIError('批量删除失败', 500)
+
+
+@positions_bp.route('/locations', methods=['GET'])
+@token_required
+def get_position_locations():
+    """获取岗位地点列表"""
+    try:
+        locations = db.session.query(Position.location).filter(
+            Position.location.isnot(None)
+        ).distinct().all()
+        location_list = sorted({loc for (loc,) in locations if loc})
+        return jsonify({
+            'success': True,
+            'data': location_list
+        }), 200
+    except Exception as e:
+        logger.error(f"Get position locations error: {str(e)}", exc_info=True)
+        raise APIError('获取岗位地点失败', 500)
 

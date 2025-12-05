@@ -1,0 +1,1319 @@
+2025-12-05 18:57:18,122 INFO: 应用启动 [in c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\logger.py:23]
+2025-12-05 18:57:18,562 INFO: 应用启动 [in c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\logger.py:23]
+2025-12-05 18:57:46,092 INFO: 应用启动 [in c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\logger.py:23]
+2025-12-05 18:57:46,507 INFO: 应用启动 [in c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\logger.py:23]
+2025-12-05 18:58:26,484 ERROR: Get positions error: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions ORDER BY positions.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) [in c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\positions.py:117]
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'positions.min_salary' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\positions.py", line 101, in get_positions
+    pagination = query.order_by(Position.created_at.desc()).paginate(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+            ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions ORDER BY positions.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-12-05 18:58:26,498 ERROR: API Error: 获取岗位列表失败 [in c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\errors.py:20]
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'positions.min_salary' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\positions.py", line 101, in get_positions
+    pagination = query.order_by(Position.created_at.desc()).paginate(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+            ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions ORDER BY positions.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\decorators.py", line 27, in decorated
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\positions.py", line 118, in get_positions
+    raise APIError('获取岗位列表失败', 500)
+app.utils.errors.APIError: 获取岗位列表失败
+2025-12-05 18:58:41,190 ERROR: Get overview error: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions) AS anon_1]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) [in c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\statistics.py:74]
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'positions.min_salary' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\statistics.py", line 27, in get_overview
+    total_positions = Position.query.count()
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 3146, in count
+    self._legacy_from_self(col).enable_eagerloads(False).scalar()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2835, in scalar
+    ret = self.one()
+          ^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2808, in one
+    return self._iter().one()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions) AS anon_1]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-12-05 18:58:41,192 ERROR: API Error: 获取概览统计失败 [in c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\errors.py:20]
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'positions.min_salary' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\statistics.py", line 27, in get_overview
+    total_positions = Position.query.count()
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 3146, in count
+    self._legacy_from_self(col).enable_eagerloads(False).scalar()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2835, in scalar
+    ret = self.one()
+          ^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2808, in one
+    return self._iter().one()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions) AS anon_1]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\decorators.py", line 27, in decorated
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\decorators.py", line 38, in decorated
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\statistics.py", line 75, in get_overview
+    raise APIError('获取概览统计失败', 500)
+app.utils.errors.APIError: 获取概览统计失败
+2025-12-05 19:02:33,453 INFO: 应用启动 [in C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\logger.py:23]
+2025-12-05 19:02:34,002 INFO: 应用启动 [in C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\logger.py:23]
+2025-12-05 19:03:02,360 ERROR: Get positions error: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions ORDER BY positions.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) [in c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\positions.py:117]
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'positions.min_salary' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\positions.py", line 101, in get_positions
+    pagination = query.order_by(Position.created_at.desc()).paginate(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+            ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions ORDER BY positions.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-12-05 19:03:02,361 ERROR: API Error: 获取岗位列表失败 [in c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\errors.py:20]
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'positions.min_salary' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\positions.py", line 101, in get_positions
+    pagination = query.order_by(Position.created_at.desc()).paginate(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+            ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions ORDER BY positions.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\decorators.py", line 27, in decorated
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "c:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\positions.py", line 118, in get_positions
+    raise APIError('获取岗位列表失败', 500)
+app.utils.errors.APIError: 获取岗位列表失败
+2025-12-05 19:03:08,520 ERROR: Get positions error: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions ORDER BY positions.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) [in C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\positions.py:117]
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'positions.min_salary' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\positions.py", line 101, in get_positions
+    pagination = query.order_by(Position.created_at.desc()).paginate(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+            ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions ORDER BY positions.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-12-05 19:03:08,530 ERROR: API Error: 获取岗位列表失败 [in C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\errors.py:20]
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'positions.min_salary' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\positions.py", line 101, in get_positions
+    pagination = query.order_by(Position.created_at.desc()).paginate(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+            ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions ORDER BY positions.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\decorators.py", line 27, in decorated
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\positions.py", line 118, in get_positions
+    raise APIError('获取岗位列表失败', 500)
+app.utils.errors.APIError: 获取岗位列表失败
+2025-12-05 19:03:15,288 ERROR: Get overview error: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions) AS anon_1]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) [in C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\statistics.py:74]
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'positions.min_salary' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\statistics.py", line 27, in get_overview
+    total_positions = Position.query.count()
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 3146, in count
+    self._legacy_from_self(col).enable_eagerloads(False).scalar()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2835, in scalar
+    ret = self.one()
+          ^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2808, in one
+    return self._iter().one()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions) AS anon_1]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-12-05 19:03:15,290 ERROR: API Error: 获取概览统计失败 [in C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\errors.py:20]
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'positions.min_salary' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\statistics.py", line 27, in get_overview
+    total_positions = Position.query.count()
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 3146, in count
+    self._legacy_from_self(col).enable_eagerloads(False).scalar()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2835, in scalar
+    ret = self.one()
+          ^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2808, in one
+    return self._iter().one()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions) AS anon_1]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\decorators.py", line 27, in decorated
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\decorators.py", line 38, in decorated
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\statistics.py", line 75, in get_overview
+    raise APIError('获取概览统计失败', 500)
+app.utils.errors.APIError: 获取概览统计失败
+2025-12-05 19:03:16,707 ERROR: Get position distribution error: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) [in C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\statistics.py:193]
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'positions.min_salary' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\statistics.py", line 170, in get_position_distribution
+    positions = Position.query.all()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-12-05 19:03:16,709 ERROR: API Error: 获取岗位分布统计失败 [in C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\errors.py:20]
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'positions.min_salary' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\statistics.py", line 170, in get_position_distribution
+    positions = Position.query.all()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'positions.min_salary' in 'field list'")
+[SQL: SELECT positions.id AS positions_id, positions.title AS positions_title, positions.company_name AS positions_company_name, positions.description AS positions_description, positions.requirements AS positions_requirements, positions.location AS positions_location, positions.latitude AS positions_latitude, positions.longitude AS positions_longitude, positions.min_salary AS positions_min_salary, positions.max_salary AS positions_max_salary, positions.internship_duration AS positions_internship_duration, positions.max_students AS positions_max_students, positions.current_students AS positions_current_students, positions.status AS positions_status, positions.publisher_id AS positions_publisher_id, positions.created_at AS positions_created_at, positions.updated_at AS positions_updated_at 
+FROM positions]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\decorators.py", line 27, in decorated
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\utils\decorators.py", line 38, in decorated
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lsr\Desktop\2025-2026\学生实习信息管理系统的设计与实现\code\shixi-guanli-xitong\backend\app\routes\statistics.py", line 194, in get_position_distribution
+    raise APIError('获取岗位分布统计失败', 500)
+app.utils.errors.APIError: 获取岗位分布统计失败

@@ -4,12 +4,107 @@
     <button size="mini" bindtap="onSearch">搜索</button>
   </view>
 
+  <view class="filter-panel card">
+    <view class="filter-row">
+      <view class="filter-label">地点</view>
+      <picker
+        mode="selector"
+        range="{{locationOptions}}"
+        value="{{selectedLocationIndex}}"
+        bindchange="onLocationChange"
+      >
+        <view class="picker-value">{{locationOptions[selectedLocationIndex]}}</view>
+      </picker>
+    </view>
+
+    <view class="filter-row salary-row">
+      <view class="filter-label">薪资范围</view>
+      <view class="salary-display">{{filters.minSalary}} - {{filters.maxSalary}} 元/月</view>
+      <slider
+        class="salary-slider"
+        show-value
+        step="{{salaryConfig.step}}"
+        min="{{salaryConfig.min}}"
+        max="{{salaryConfig.max}}"
+        value="{{filters.minSalary}}"
+        bindchange="onMinSalaryChange"
+      />
+      <slider
+        class="salary-slider"
+        show-value
+        step="{{salaryConfig.step}}"
+        min="{{salaryConfig.min}}"
+        max="{{salaryConfig.max}}"
+        value="{{filters.maxSalary}}"
+        bindchange="onMaxSalaryChange"
+      />
+    </view>
+
+    <view class="filter-row">
+      <view class="filter-label">实习时长</view>
+      <radio-group
+        class="chip-group"
+        value="{{filters.internshipDuration}}"
+        bindchange="onDurationChange"
+      >
+        <label
+          class="chip {{filters.internshipDuration === item.value ? 'chip-active' : ''}}"
+          wx:for="{{durationOptions}}"
+          wx:key="value"
+        >
+          <radio
+            value="{{item.value}}"
+            checked="{{item.value === filters.internshipDuration}}"
+          />
+          <text>{{item.label}}</text>
+        </label>
+      </radio-group>
+    </view>
+
+    <view class="filter-row">
+      <view class="filter-label">岗位状态</view>
+      <radio-group class="chip-group" value="{{filters.status}}" bindchange="onStatusChange">
+        <label
+          class="chip {{filters.status === item.value ? 'chip-active' : ''}}"
+          wx:for="{{statusOptions}}"
+          wx:key="value"
+        >
+          <radio value="{{item.value}}" checked="{{item.value === filters.status}}" />
+          <text>{{item.label}}</text>
+        </label>
+      </radio-group>
+    </view>
+
+    <view class="filter-actions">
+      <button size="mini" bindtap="resetFilters">重置</button>
+      <button size="mini" type="primary" bindtap="applyFilters">筛选</button>
+    </view>
+  </view>
+
   <view wx:if="{{loading}}" class="loading">加载中...</view>
 
-  <view wx:for="{{positions}}" wx:key="id" class="position-card card" data-id="{{item.id}}" bindtap="navigateToDetail">
+  <view
+    wx:for="{{positions}}"
+    wx:key="id"
+    class="position-card card"
+    data-id="{{item.id}}"
+    bindtap="navigateToDetail"
+  >
     <view class="title">{{item.title}}</view>
     <view class="company">{{item.company_name}}</view>
     <view class="location">📍 {{item.location}}</view>
+    <view class="info-row">
+      <text>薪资：</text>
+      <text>{{item.salaryText}}</text>
+    </view>
+    <view class="info-row">
+      <text>时长：</text>
+      <text>{{item.durationText}}</text>
+    </view>
+    <view class="info-row">
+      <text>状态：</text>
+      <text class="status-tag status-{{item.status}}">{{item.statusText}}</text>
+    </view>
     <view class="info">
       <text>已接收：{{item.current_students}}/{{item.max_students}}</text>
     </view>

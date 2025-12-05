@@ -2,10 +2,27 @@
   <div class="applications">
     <el-card>
       <template #header>
-        <span>申请管理</span>
+        <div class="card-header">
+          <span>申请管理</span>
+          <el-button
+            v-if="isAdmin"
+            type="primary"
+            size="small"
+            :disabled="selectedApplicationIds.length === 0"
+            @click="openBatchReview"
+          >
+            批量审核
+          </el-button>
+        </div>
       </template>
       
-      <el-table :data="applications" v-loading="loading" border>
+      <el-table
+        :data="applications"
+        v-loading="loading"
+        border
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55" />
         <el-table-column prop="student_name" label="学生姓名" />
         <el-table-column prop="student_id_number" label="学号" />
         <el-table-column prop="position_title" label="岗位标题" />
@@ -85,13 +102,33 @@
         <el-button type="primary" @click="submitReview">确定</el-button>
       </template>
     </el-dialog>
+    
+    <!-- 批量审核对话框 -->
+    <el-dialog v-model="batchReviewVisible" title="批量审核申请" width="500px">
+      <el-form :model="batchReviewForm" label-width="100px">
+        <el-form-item label="审核结果">
+          <el-radio-group v-model="batchReviewForm.status">
+            <el-radio label="approved">通过</el-radio>
+            <el-radio label="rejected">拒绝</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="审核意见">
+          <el-input v-model="batchReviewForm.review_comment" type="textarea" :rows="4" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="batchReviewVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitBatchReview">确定</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import api from '@/utils/api'
 import { ElMessage } from 'element-plus'
+import { useAuthStore } from '@/stores/auth'
 
 const loading = ref(false)
 const applications = ref([])
@@ -101,11 +138,21 @@ const total = ref(0)
 const detailVisible = ref(false)
 const reviewVisible = ref(false)
 const currentApplication = ref(null)
+const selectedApplicationIds = ref([])
+const batchReviewVisible = ref(false)
 
 const reviewForm = reactive({
   status: 'approved',
   review_comment: ''
 })
+
+const batchReviewForm = reactive({
+  status: 'approved',
+  review_comment: ''
+})
+
+const authStore = useAuthStore()
+const isAdmin = computed(() => authStore.user?.role === 'admin')
 
 function getStatusType(status) {
   const map = {
@@ -165,8 +212,48 @@ async function submitReview() {
   }
 }
 
+function handleSelectionChange(selection) {
+  selectedApplicationIds.value = selection
+    .filter(item => item.status === 'pending')
+    .map(item => item.id)
+}
+
+function openBatchReview() {
+  if (!selectedApplicationIds.value.length) {
+    ElMessage.warning('请选择待审核的申请')
+    return
+  }
+  batchReviewForm.status = 'approved'
+  batchReviewForm.review_comment = ''
+  batchReviewVisible.value = true
+}
+
+async function submitBatchReview() {
+  try {
+    await api.post('/applications/batch-audit', {
+      ids: selectedApplicationIds.value,
+      status: batchReviewForm.status,
+      review_comment: batchReviewForm.review_comment
+    })
+    ElMessage.success('批量审核成功')
+    batchReviewVisible.value = false
+    selectedApplicationIds.value = []
+    fetchApplications()
+  } catch (error) {
+    ElMessage.error(error.response?.data?.message || '批量审核失败')
+  }
+}
+
 onMounted(() => {
   fetchApplications()
 })
 </script>
+
+<style scoped>
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>
 

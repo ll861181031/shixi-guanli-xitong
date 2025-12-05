@@ -15,6 +15,16 @@ logger = logging.getLogger(__name__)
 
 checkins_bp = Blueprint('checkins', __name__)
 
+
+def _parse_query_date(raw_value, field_name):
+    """解析查询参数中的日期字符串，确保无效输入不会导致 500"""
+    if not raw_value:
+        return None
+    try:
+        return datetime.fromisoformat(raw_value).date()
+    except ValueError:
+        raise APIError(f'{field_name}格式不正确，应为YYYY-MM-DD', 400, 'INVALID_DATE_RANGE')
+
 @checkins_bp.route('', methods=['GET'])
 @token_required
 def get_checkins():
@@ -25,8 +35,8 @@ def get_checkins():
         student_id = request.args.get('student_id', type=int)
         position_id = request.args.get('position_id', type=int)
         status = request.args.get('status')
-        start_date = request.args.get('start_date')
-        end_date = request.args.get('end_date')
+        start_date = _parse_query_date(request.args.get('start_date'), 'start_date')
+        end_date = _parse_query_date(request.args.get('end_date'), 'end_date')
         
         query = CheckIn.query
         
@@ -43,9 +53,9 @@ def get_checkins():
             query = query.filter_by(status=status)
         
         if start_date:
-            query = query.filter(CheckIn.checkin_date >= datetime.fromisoformat(start_date).date())
+            query = query.filter(CheckIn.checkin_date >= start_date)
         if end_date:
-            query = query.filter(CheckIn.checkin_date <= datetime.fromisoformat(end_date).date())
+            query = query.filter(CheckIn.checkin_date <= end_date)
         
         pagination = query.order_by(CheckIn.checkin_time.desc()).paginate(
             page=page, per_page=per_page, error_out=False
