@@ -71,6 +71,8 @@ def mark_message_read(message_id):
         raise APIError('标记失败', 500)
 
 MODULE_PERMISSIONS = ['positions', 'applications', 'checkins', 'reports', 'statistics', 'users']
+# CSV 模板，包含表头与示例行（注意使用真实换行符）
+TEMPLATE_CSV = "username,real_name,role,student_id,password,phone,email,status\nstudent001,张三,student,20230001,123456,13800000000,student001@qq.com,1(1启用 0禁用)"
 
 @users_bp.route('', methods=['GET'])
 @role_required('admin', 'teacher')
@@ -292,4 +294,71 @@ def _normalize_permissions(raw):
         raise APIError('权限格式不正确', 400, 'INVALID_PERMISSIONS')
     cleaned = [p for p in perms if p in MODULE_PERMISSIONS]
     return cleaned
+
+
+@users_bp.route('/import', methods=['POST'])
+@role_required('admin')
+def import_users():
+    """批量导入用户，接受 JSON 数组 users"""
+    try:
+        payload = request.get_json() or {}
+        users_data = payload.get('users')
+        if not isinstance(users_data, list) or len(users_data) == 0:
+            raise APIError('users 必须为非空数组', 400, 'INVALID_USERS')
+        created = 0
+        skipped = []
+        for item in users_data:
+            username = (item.get('username') or '').strip()
+            real_name = (item.get('real_name') or '').strip()
+            role = (item.get('role') or 'student').strip()
+            password = item.get('password') or '123456'
+            status = item.get('status', 1)
+            if not username or not real_name or role not in ['admin', 'teacher', 'student']:
+                skipped.append(username or '未知')
+                continue
+            if User.query.filter_by(username=username).first():
+                skipped.append(username)
+                continue
+            student_id = item.get('student_id')
+            if role == 'student':
+                validate_student_id(student_id or '')
+                if User.query.filter_by(student_id=student_id).first():
+                    skipped.append(username)
+                    continue
+            user = User(
+                username=username,
+                real_name=real_name,
+                role=role,
+                status=status,
+                student_id=student_id if role == 'student' else None,
+                phone=item.get('phone'),
+                email=item.get('email')
+            )
+            user.set_password(password)
+            if role == 'teacher':
+                user.set_permissions(_normalize_permissions(item.get('permissions')))
+            else:
+                user.set_permissions([])
+            db.session.add(user)
+            created += 1
+        db.session.commit()
+        return jsonify({'success': True, 'data': {'created': created, 'skipped': skipped}}), 200
+    except APIError as e:
+        raise e
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Import users error: {str(e)}", exc_info=True)
+        raise APIError('批量导入失败', 500)
+
+
+@users_bp.route('/import/template', methods=['GET'])
+@role_required('admin')
+def download_import_template():
+    """下载批量导入模板 CSV"""
+    from flask import Response
+    return Response(
+        TEMPLATE_CSV,
+        mimetype='text/csv; charset=utf-8',
+        headers={'Content-Disposition': 'attachment; filename="users_import_template.csv"'}
+    )
 

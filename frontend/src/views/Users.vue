@@ -12,6 +12,15 @@
               <el-option label="全部" value="all" />
             </el-select>
             <template v-if="isAdmin">
+            <el-upload
+              :show-file-list="false"
+              :http-request="handleImport"
+              accept=".json"
+              style="margin-left: 10px"
+            >
+              <el-button size="small" type="primary">批量导入</el-button>
+            </el-upload>
+            <el-button size="small" type="success" style="margin-left: 10px" @click="downloadTemplate">下载模板</el-button>
               <el-button
                 type="primary"
                 size="small"
@@ -324,6 +333,43 @@ async function handleBatchStatus(status) {
 onMounted(() => {
   fetchUsers()
 })
+
+async function downloadTemplate() {
+  try {
+    const res = await api.get('/users/import/template', { responseType: 'blob' })
+    const blob = new Blob([res.data], { type: 'text/csv;charset=utf-8;' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'users_import_template.csv'
+    link.click()
+    window.URL.revokeObjectURL(url)
+  } catch (e) {
+    ElMessage.error('下载模板失败')
+  }
+}
+
+async function handleImport(option) {
+  try {
+    const file = option.file
+    const text = await file.text()
+    let usersData = []
+    try {
+      usersData = JSON.parse(text)
+    } catch (e) {
+      ElMessage.error('请上传 JSON 格式文件')
+      option.onError()
+      return
+    }
+    await api.post('/users/import', { users: usersData })
+    ElMessage.success('导入完成')
+    fetchUsers()
+    option.onSuccess()
+  } catch (e) {
+    ElMessage.error(e.response?.data?.message || '导入失败')
+    option.onError()
+  }
+}
 </script>
 
 <style scoped>
@@ -336,6 +382,7 @@ onMounted(() => {
 .header-right {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 </style>
 

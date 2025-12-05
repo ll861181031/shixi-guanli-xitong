@@ -251,3 +251,27 @@ def batch_audit_applications():
         logger.error(f"Batch audit applications error: {str(e)}", exc_info=True)
         raise APIError('批量审核失败', 500)
 
+
+@applications_bp.route('/batch-delete', methods=['POST'])
+@role_required('admin')
+def batch_delete_applications():
+    """批量删除申请"""
+    try:
+        data = request.get_json() or {}
+        ids = data.get('ids')
+        if not isinstance(ids, list) or not ids:
+            raise APIError('请选择需要删除的申请', 400, 'INVALID_IDS')
+        applications = Application.query.filter(Application.id.in_(ids)).all()
+        if not applications:
+            raise APIError('未找到对应申请', 404, 'APPLICATION_NOT_FOUND')
+        for application in applications:
+            db.session.delete(application)
+        db.session.commit()
+        return jsonify({'success': True, 'message': '批量删除成功', 'data': {'deleted': ids}}), 200
+    except APIError as e:
+        raise e
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Batch delete applications error: {str(e)}", exc_info=True)
+        raise APIError('批量删除失败', 500)
+

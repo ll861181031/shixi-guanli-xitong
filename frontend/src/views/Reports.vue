@@ -2,10 +2,19 @@
   <div class="reports">
     <el-card>
       <template #header>
-        <span>周报管理</span>
+        <div class="card-header">
+          <span>周报管理</span>
+          <el-button
+            type="danger"
+            size="small"
+            :disabled="selectedIds.length === 0"
+            @click="confirmBatchDelete"
+          >批量删除</el-button>
+        </div>
       </template>
       
-      <el-table :data="reports" v-loading="loading" border>
+      <el-table :data="reports" v-loading="loading" border @selection-change="onSelectionChange">
+        <el-table-column type="selection" width="55" />
         <el-table-column prop="student_name" label="学生姓名" />
         <el-table-column prop="student_id_number" label="学号" />
         <el-table-column prop="position_title" label="岗位标题" />
@@ -90,7 +99,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import api from '@/utils/api'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const loading = ref(false)
 const reports = ref([])
@@ -100,6 +109,7 @@ const total = ref(0)
 const dialogVisible = ref(false)
 const dialogTitle = ref('周报详情')
 const currentReport = ref(null)
+const selectedIds = ref([])
 
 const reviewForm = reactive({
   score: 0,
@@ -125,6 +135,26 @@ async function fetchReports() {
     ElMessage.error('获取周报列表失败')
   } finally {
     loading.value = false
+  }
+}
+
+function onSelectionChange(selection) {
+  selectedIds.value = selection.map(item => item.id)
+}
+
+async function confirmBatchDelete() {
+  if (!selectedIds.value.length) {
+    ElMessage.warning('请选择周报')
+    return
+  }
+  try {
+    await ElMessageBox.confirm('确认删除选中的周报？此操作不可恢复', '提示', { type: 'warning' })
+    await api.post('/weekly-reports/batch-delete', { ids: selectedIds.value })
+    ElMessage.success('批量删除成功')
+    selectedIds.value = []
+    fetchReports()
+  } catch (e) {
+    // 已提示
   }
 }
 
@@ -158,3 +188,12 @@ onMounted(() => {
 })
 </script>
 
+<style scoped>
+.card-header {
+  display: flex;
+  align-items: center;
+}
+.card-header > :last-child {
+  margin-left: auto;
+}
+</style>

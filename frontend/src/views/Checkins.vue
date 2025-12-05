@@ -2,10 +2,20 @@
   <div class="checkins">
     <el-card>
       <template #header>
-        <span>签到管理</span>
+        <div class="card-header">
+          <span>签到管理</span>
+          <el-button
+            v-if="isAdmin"
+            type="danger"
+            size="small"
+            :disabled="selectedIds.length === 0"
+            @click="confirmBatchDelete"
+          >批量删除</el-button>
+        </div>
       </template>
       
-      <el-table :data="checkins" v-loading="loading" border>
+      <el-table :data="checkins" v-loading="loading" border @selection-change="onSelectionChange">
+        <el-table-column type="selection" width="55" />
         <el-table-column prop="student_name" label="学生姓名" />
         <el-table-column prop="student_id_number" label="学号" />
         <el-table-column prop="position_title" label="岗位标题" />
@@ -34,15 +44,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import api from '@/utils/api'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { useAuthStore } from '@/stores/auth'
 
 const loading = ref(false)
 const checkins = ref([])
 const page = ref(1)
 const perPage = ref(10)
 const total = ref(0)
+const selectedIds = ref([])
+const authStore = useAuthStore()
+const isAdmin = computed(() => authStore.user?.role === 'admin')
 
 async function fetchCheckins() {
   loading.value = true
@@ -61,8 +75,36 @@ async function fetchCheckins() {
   }
 }
 
+function onSelectionChange(selection) {
+  selectedIds.value = selection.map(item => item.id)
+}
+
+async function confirmBatchDelete() {
+  if (!selectedIds.value.length) {
+    ElMessage.warning('请选择记录')
+    return
+  }
+  try {
+    await ElMessageBox.confirm('确认删除选中的签到记录？此操作不可恢复', '提示', { type: 'warning' })
+    await api.post('/checkins/batch-delete', { ids: selectedIds.value })
+    ElMessage.success('批量删除成功')
+    selectedIds.value = []
+    fetchCheckins()
+  } catch (e) {
+    // 已提示
+  }
+}
+
 onMounted(() => {
   fetchCheckins()
 })
 </script>
+
+<style scoped>
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>
 

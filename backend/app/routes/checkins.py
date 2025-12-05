@@ -199,6 +199,30 @@ def create_checkin():
         logger.error(f"Create checkin error: {str(e)}", exc_info=True)
         raise APIError('签到失败', 500)
 
+
+@checkins_bp.route('/batch-delete', methods=['POST'])
+@role_required('admin')
+def batch_delete_checkins():
+    """批量删除签到记录"""
+    try:
+        data = request.get_json() or {}
+        ids = data.get('ids')
+        if not isinstance(ids, list) or not ids:
+            raise APIError('请选择需要删除的记录', 400, 'INVALID_IDS')
+        records = CheckIn.query.filter(CheckIn.id.in_(ids)).all()
+        if not records:
+            raise APIError('未找到对应记录', 404, 'CHECKIN_NOT_FOUND')
+        for rec in records:
+            db.session.delete(rec)
+        db.session.commit()
+        return jsonify({'success': True, 'message': '批量删除成功', 'data': {'deleted': ids}}), 200
+    except APIError as e:
+        raise e
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Batch delete checkins error: {str(e)}", exc_info=True)
+        raise APIError('批量删除失败', 500)
+
 @checkins_bp.route('/statistics', methods=['GET'])
 @token_required
 def get_checkin_statistics():

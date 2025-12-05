@@ -1,10 +1,15 @@
 <template>
   <el-container class="layout-container">
-    <el-aside width="200px" class="sidebar">
+    <el-aside :width="collapsed ? '64px' : '200px'" class="sidebar">
       <div class="logo">
-        <h2>实习管理系统</h2>
+        <h2 v-if="!collapsed">实习管理系统</h2>
+        <el-button link class="collapse-btn" @click="toggleCollapse">
+          <el-icon v-if="collapsed"><Expand /></el-icon>
+          <el-icon v-else><Fold /></el-icon>
+        </el-button>
       </div>
       <el-menu
+        :collapse="collapsed"
         :default-active="activeMenu"
         router
         class="sidebar-menu"
@@ -55,8 +60,14 @@
       <el-header class="header">
         <div class="header-left">
           <h3>{{ currentTitle }}</h3>
+          <el-tag size="small" type="warning" effect="plain" class="env-tag">{{ envLabel }}</el-tag>
         </div>
         <div class="header-right">
+          <el-badge :value="noticeCount" class="notice-badge">
+            <el-button link @click="goNotice">
+              <el-icon><Bell /></el-icon>
+            </el-button>
+          </el-badge>
           <el-dropdown @command="handleCommand">
             <span class="user-info">
               <el-icon><User /></el-icon>
@@ -79,10 +90,10 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { DataBoard, Briefcase, Document, Location, EditPen, DataAnalysis, User, ArrowDown } from '@element-plus/icons-vue'
+import { DataBoard, Briefcase, Document, Location, EditPen, DataAnalysis, User, ArrowDown, Bell, Fold, Expand } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -92,6 +103,9 @@ const user = computed(() => authStore.user)
 const permissionSet = computed(() => new Set(user.value?.permissions || []))
 const activeMenu = computed(() => route.path)
 const currentTitle = computed(() => route.meta.title || '仪表盘')
+const collapsed = ref(false)
+const envLabel = import.meta.env.MODE === 'production' ? '生产环境' : '测试/开发'
+const noticeCount = computed(() => authStore.noticeCount || 0)
 
 function handleCommand(command) {
   if (command === 'logout') {
@@ -106,6 +120,14 @@ function canAccess(key) {
     return permissionSet.value.has(key)
   }
   return false
+}
+
+function toggleCollapse() {
+  collapsed.value = !collapsed.value
+}
+
+function goNotice() {
+  router.push('/messages')
 }
 </script>
 
@@ -123,14 +145,19 @@ function canAccess(key) {
   height: 60px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   color: #fff;
   border-bottom: 1px solid #434a55;
+  padding: 0 12px;
 }
 
 .logo h2 {
   font-size: 18px;
   font-weight: 500;
+}
+
+.collapse-btn {
+  color: #bfcbd9;
 }
 
 .sidebar-menu {
@@ -155,6 +182,7 @@ function canAccess(key) {
 .header-right {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
 .user-info {
@@ -164,6 +192,13 @@ function canAccess(key) {
   color: #606266;
 }
 
+.notice-badge {
+  margin-right: 4px;
+}
+
+.env-tag {
+  margin-left: 6px;
+}
 .main-content {
   background-color: #f0f2f5;
   padding: 20px;

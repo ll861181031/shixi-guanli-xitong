@@ -107,5 +107,27 @@ Authorization: Bearer <token>
 }
 ```
 
-错误时返回相应的HTTP状态码和错误信息。
+错误时返回相应的HTTP状态码和错误信息。常见约定：
+
+- 认证缺失/过期：401，`message: 登录已过期`，需携带 `Authorization: Bearer <token>`
+- 权限不足：403，`message: 权限不足`，教师需具备具体模块权限（如 `positions`/`applications`/`reports`/`checkins`/`statistics`/`forum`）
+- 校验错误：400，`error_code` 可能为 `INVALID_PARAM` / 业务自定义（如 `ALREADY_APPLIED`、`OUT_OF_RANGE` 等）
+- 结构化错误：部分接口在 `data` 中附带细节（如距离超限 `data: { distance, allowed }`）
+
+分页/过滤约定：
+- 通用参数：`page`（默认1）、`per_page`（默认10或20），返回 `items/total/page/per_page/pages`
+- 关键词：`keyword`（岗位/论坛支持标题/内容模糊）
+- 时间范围：`start_time/end_time`（ISO，如 `2025-12-05T00:00:00`）
+- 状态/分类过滤：如 `status`、`category_id`、岗位的 `location/min_salary/max_salary/internship_duration`
+
+角色与权限：
+- 角色：`student` / `teacher` / `admin`
+- 学生：仅能操作个人相关（申请、签到、周报、论坛发帖/评论等）
+- 教师：需在 `users.permissions` 中具备对应模块权限方可访问；无权限返回 403
+- 管理员：可访问所有模块
+
+论坛上传/限制：
+- 图片上传：`POST /api/forum/upload`，仅 jpg/png，单张 ≤5MB
+- 发帖：标题 5-50 字，内容 ≥20 字，最多 3 张图片，可选分类；默认状态 pending，需审核
+- 评论：1-200 字，防敏感词（如开启 `FORUM_SENSITIVE_CHECK_ENABLED`）
 

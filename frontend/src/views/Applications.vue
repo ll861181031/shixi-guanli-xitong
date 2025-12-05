@@ -4,15 +4,26 @@
       <template #header>
         <div class="card-header">
           <span>申请管理</span>
-          <el-button
-            v-if="isAdmin"
-            type="primary"
-            size="small"
-            :disabled="selectedApplicationIds.length === 0"
-            @click="openBatchReview"
-          >
-            批量审核
-          </el-button>
+          <div class="header-actions">
+            <el-button
+              v-if="isAdmin"
+              type="primary"
+              size="small"
+              :disabled="selectedApplicationIds.length === 0"
+              @click="openBatchReview"
+            >
+              批量审核
+            </el-button>
+            <el-button
+              v-if="isAdmin"
+              type="danger"
+              size="small"
+              :disabled="selectedApplicationIds.length === 0"
+              @click="confirmBatchDelete"
+            >
+              批量删除
+            </el-button>
+          </div>
         </div>
       </template>
       
@@ -127,7 +138,7 @@
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue'
 import api from '@/utils/api'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { useAuthStore } from '@/stores/auth'
 
 const loading = ref(false)
@@ -213,9 +224,7 @@ async function submitReview() {
 }
 
 function handleSelectionChange(selection) {
-  selectedApplicationIds.value = selection
-    .filter(item => item.status === 'pending')
-    .map(item => item.id)
+  selectedApplicationIds.value = selection.map(item => item.id)
 }
 
 function openBatchReview() {
@@ -241,6 +250,22 @@ async function submitBatchReview() {
     fetchApplications()
   } catch (error) {
     ElMessage.error(error.response?.data?.message || '批量审核失败')
+  }
+}
+
+async function confirmBatchDelete() {
+  if (!selectedApplicationIds.value.length) {
+    ElMessage.warning('请选择待操作的申请')
+    return
+  }
+  try {
+    await ElMessageBox.confirm('确认删除选中的申请？此操作不可恢复', '提示', { type: 'warning' })
+    await api.post('/applications/batch-delete', { ids: selectedApplicationIds.value })
+    ElMessage.success('批量删除成功')
+    selectedApplicationIds.value = []
+    fetchApplications()
+  } catch (e) {
+    // 已有交互提示
   }
 }
 

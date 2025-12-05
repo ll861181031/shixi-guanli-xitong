@@ -220,6 +220,30 @@ def upload_attachment():
         logger.error(f"Upload attachment error: {str(e)}", exc_info=True)
         raise APIError('上传失败', 500)
 
+
+@weekly_reports_bp.route('/batch-delete', methods=['POST'])
+@role_required('admin')
+def batch_delete_reports():
+    """批量删除周报"""
+    try:
+        data = request.get_json() or {}
+        ids = data.get('ids')
+        if not isinstance(ids, list) or not ids:
+            raise APIError('请选择需要删除的周报', 400, 'INVALID_IDS')
+        reports = WeeklyReport.query.filter(WeeklyReport.id.in_(ids)).all()
+        if not reports:
+            raise APIError('未找到对应周报', 404, 'REPORT_NOT_FOUND')
+        for report in reports:
+            db.session.delete(report)
+        db.session.commit()
+        return jsonify({'success': True, 'message': '批量删除成功', 'data': {'deleted': ids}}), 200
+    except APIError as e:
+        raise e
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Batch delete weekly reports error: {str(e)}", exc_info=True)
+        raise APIError('批量删除失败', 500)
+
 @weekly_reports_bp.route('/<int:report_id>/review', methods=['POST'])
 @role_required('admin', 'teacher')
 def review_weekly_report(report_id):
