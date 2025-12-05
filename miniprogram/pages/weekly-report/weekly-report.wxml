@@ -1,5 +1,12 @@
 <view class="container">
-  <view class="card">
+  <view wx:if="{{loadingPosition}}" class="skeleton">加载岗位信息...</view>
+
+  <view wx:if="{{!loadingPosition && !hasApproved}}" class="empty">
+    <view class="empty-text">{{emptyReason || '暂无已通过的申请，无法提交周报'}}</view>
+    <button class="btn-primary" bindtap="retryLoad">重试</button>
+  </view>
+
+  <view wx:if="{{!loadingPosition && hasApproved && position}}" class="card">
     <view class="form-item">
       <view class="label">岗位</view>
       <view class="value">{{position ? position.title : '加载中...'}}</view>

@@ -35,6 +35,10 @@
   color: #409eff;
 }
 
+.link {
+  margin-left: 10rpx;
+}
+
 .score {
   font-size: 48rpx;
   font-weight: bold;
@@ -49,5 +53,12 @@
   margin-top: 30rpx;
   padding-top: 20rpx;
   border-top: 1rpx solid #f0f0f0;
+}
+
+.skeleton, .empty {
+  text-align: center;
+  padding: 80rpx 40rpx;
+  color: #909399;
+  font-size: 28rpx;
 }
 

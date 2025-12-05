@@ -6,10 +6,11 @@ from app.models.position import Position
 from app.utils.decorators import token_required, role_required
 from app.utils.errors import APIError
 from app.utils.validators import validate_required, validate_coordinates
-from app.utils.distance import haversine_distance, check_checkin_status
-from datetime import datetime, date, timedelta
+from app.utils.distance import haversine_distance
+from datetime import datetime, date, timedelta, time
 from sqlalchemy import func
 import logging
+import time as time_lib
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +82,7 @@ def get_checkins():
 def create_checkin():
     """提交签到"""
     try:
+        start_ts = time_lib.time()
         # 只有学生可以签到
         if request.current_user.role != 'student':
             raise APIError('只有学生可以签到', 403)
@@ -103,22 +105,6 @@ def create_checkin():
         if not application:
             raise APIError('您未申请或该申请未通过', 400, 'NO_APPROVED_APPLICATION')
         
-        # 计算距离
-        distance = haversine_distance(
-            data['latitude'],
-            data['longitude'],
-            position.latitude,
-            position.longitude
-        )
-        
-        # 判断签到状态
-        from flask import current_app
-        status = check_checkin_status(
-            distance,
-            current_app.config['CHECKIN_NORMAL_DISTANCE'],
-            current_app.config['CHECKIN_ABNORMAL_DISTANCE']
-        )
-        
         # 检查今天是否已签到
         today = date.today()
         today_checkin = CheckIn.query.filter_by(
@@ -128,7 +114,41 @@ def create_checkin():
         ).first()
         
         if today_checkin:
-            raise APIError('今天已签到', 400, 'ALREADY_CHECKED_IN')
+            raise APIError('今日已完成签到', 400, 'ALREADY_CHECKED_IN', code='1002')
+
+        # 校验签到时间窗口
+        from flask import current_app
+        start_cfg = current_app.config.get('CHECKIN_WORKDAY_START', '09:00')
+        end_cfg = current_app.config.get('CHECKIN_WORKDAY_END', '18:00')
+        start_h, start_m = map(int, start_cfg.split(':'))
+        end_h, end_m = map(int, end_cfg.split(':'))
+        now_time = datetime.utcnow().time()
+        start_time = time(start_h, start_m)
+        end_time = time(end_h, end_m)
+        late_minutes = 0
+        if now_time < start_time:
+            raise APIError('当前非签到时段', 400, 'NOT_IN_CHECKIN_WINDOW', code='1003')
+        if now_time > end_time:
+            delta = datetime.combine(today, now_time) - datetime.combine(today, end_time)
+            late_minutes = max(0, int(delta.total_seconds() // 60))
+
+        # 计算距离
+        distance = haversine_distance(
+            data['latitude'],
+            data['longitude'],
+            position.latitude,
+            position.longitude
+        )
+
+        allowed_radius = position.checkin_radius or current_app.config.get('CHECKIN_NORMAL_DISTANCE', 200)
+        status = 'normal'
+        abnormal_reason = None
+        if distance > allowed_radius:
+            status = 'abnormal'
+            abnormal_reason = f'超出签到范围，当前距离{round(distance,2)}米，允许{allowed_radius}米内'
+        elif late_minutes > 0:
+            status = 'late'
+            abnormal_reason = f'迟到 {late_minutes} 分钟'
         
         checkin = CheckIn(
             student_id=request.current_user.id,
@@ -138,29 +158,38 @@ def create_checkin():
             longitude=data['longitude'],
             distance=distance,
             status=status,
+            abnormal_reason=abnormal_reason,
             remark=data.get('remark')
         )
-        
+
+        from app.models.message import Message
         db.session.add(checkin)
+        message = Message(
+            user_id=request.current_user.id,
+            title='签到通知',
+            content=f'您的签到已提交，状态：{status}，距离：{round(distance,2)}米',
+            type='checkin',
+            related_id=checkin.id
+        )
+        db.session.add(message)
         db.session.commit()
-        
-        # 如果是异常签到，发送消息给教师
+
+        duration_ms = int((time_lib.time() - start_ts) * 1000)
+        logger.info(f"checkin_log|user={request.current_user.id}|position={position_id}|status={status}|distance={round(distance,2)}|allowed={allowed_radius}|late_minutes={late_minutes}|duration_ms={duration_ms}")
+
         if status == 'abnormal':
-            from app.models.message import Message
-            message = Message(
-                user_id=position.publisher_id,
-                title='异常签到提醒',
-                content=f'{request.current_user.real_name}在{position.title}位置签到异常，距离{round(distance, 2)}米',
-                type='checkin',
-                related_id=checkin.id
+            raise APIError(
+                f'超出签到范围，当前距离{round(distance,2)}米，允许{allowed_radius}米内',
+                400,
+                'OUT_OF_RANGE',
+                code='1001',
+                data={'distance': round(distance, 2), 'allowed': allowed_radius}
             )
-            db.session.add(message)
-            db.session.commit()
-        
+
         return jsonify({
             'success': True,
-            'message': '签到成功',
-            'data': checkin.to_dict()
+            'message': '签到成功' if status == 'normal' else '签到已记录',
+            'data': {**checkin.to_dict(), 'late_minutes': late_minutes}
         }), 201
         
     except APIError as e:

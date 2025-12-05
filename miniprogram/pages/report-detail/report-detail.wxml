@@ -1,5 +1,7 @@
 <view class="container">
-  <view wx:if="{{report}}" class="card">
+  <view wx:if="{{loading}}" class="skeleton">加载中...</view>
+
+  <view wx:if="{{!loading && report}}" class="card">
     <view class="title">第{{report.week_number}}周周报</view>
     <view class="info-row">
       <text>岗位：</text>
@@ -17,7 +19,9 @@
     
     <view wx:if="{{report.attachment_name}}" class="section">
       <view class="section-title">附件</view>
-      <view class="attachment">{{report.attachment_name}}</view>
+      <view class="attachment" bindtap="openAttachment">
+        {{report.attachment_name}} <text class="link">点击查看</text>
+      </view>
     </view>
     
     <view wx:if="{{report.status === 'reviewed'}}" class="section">
@@ -32,5 +36,7 @@
     
     <view class="time">提交时间：{{report.created_at}}</view>
   </view>
+
+  <view wx:if="{{!loading && !report}}" class="empty">未找到周报详情</view>
 </view>
 

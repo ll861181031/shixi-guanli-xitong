@@ -23,8 +23,11 @@ class Config:
     ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png'}
     
     # 签到配置
-    CHECKIN_NORMAL_DISTANCE = 200  # 正常签到距离（米）
-    CHECKIN_ABNORMAL_DISTANCE = 500  # 异常签到距离（米）
+    CHECKIN_NORMAL_DISTANCE = 200  # 兼容旧逻辑，默认200米
+    CHECKIN_ABNORMAL_DISTANCE = 500  # 兼容旧逻辑
+    CHECKIN_WORKDAY_START = '09:00'  # 签到开始时间
+    CHECKIN_WORKDAY_END = '18:00'    # 签到结束时间
+    CHECKIN_ALLOW_MULTIPLE = False   # 每日是否允许多次签到
     
     # 微信小程序配置
     WX_APPID = os.environ.get('WX_APPID') or ''

@@ -4,134 +4,224 @@ const app = getApp()
 Page({
   data: {
     position: null,
+    hasApproved: false,
     location: null,
+    locationText: '',
     distance: 0,
-    status: ''
+    allowedRadius: 0,
+    status: '',
+    statusText: '',
+    loading: false,
+    loadingPosition: false,
+    todayCheckin: null,
+    todayStatusText: '今日未签到',
+    todayTimeText: '',
+    permissionDenied: false,
+    errorMessage: '',
+    emptyReason: '',
   },
 
   onLoad() {
-    this.loadPosition()
+    this.initPage()
+  },
+
+  onShow() {
+    // 返回页面时刷新今日状态
+    this.loadTodayStatus()
+  },
+
+  async initPage() {
+    await this.loadPosition()
+    await this.loadTodayStatus()
   },
 
   async loadPosition() {
+    this.setData({ loadingPosition: true })
     try {
-      // 获取已批准的申请
-      const appRes = await api.get('/applications', { status: 'approved', per_page: 1 })
-      if (appRes.success && appRes.data.items.length > 0) {
-        const application = appRes.data.items[0]
-        const posRes = await api.get(`/positions/${application.position_id}`)
-        if (posRes.success) {
-          this.setData({ position: posRes.data.data })
-        }
-      } else {
-        wx.showToast({
-          title: '您还没有已通过的申请',
-          icon: 'none'
+      // 拉取更多申请，前端挑选已通过的
+      const appRes = await api.get('/applications', { per_page: 50 })
+      const items = appRes?.data?.items || appRes?.data?.data?.items || []
+      const approved = items.find(item => item.status === 'approved')
+      if (!approved) {
+        this.setData({
+          hasApproved: false,
+          emptyReason: '您还没有已通过的申请，暂不可签到'
         })
-        setTimeout(() => {
-          wx.navigateBack()
-        }, 1500)
+        return
+      }
+      const posRes = await api.get(`/positions/${approved.position_id}`)
+      const pos = posRes?.data?.data || posRes?.data
+      if (pos) {
+        this.setData({
+          position: pos,
+          hasApproved: true,
+          allowedRadius: pos.checkin_radius || 200
+        })
+      } else {
+        this.setData({
+          hasApproved: false,
+          emptyReason: '加载岗位信息失败，请稍后重试'
+        })
       }
     } catch (error) {
       console.error('加载岗位失败:', error)
+      this.setData({ emptyReason: '加载岗位信息失败，请稍后重试' })
+    } finally {
+      this.setData({ loadingPosition: false })
+    }
+  },
+
+  async loadTodayStatus() {
+    try {
+      const today = new Date().toISOString().slice(0, 10)
+      const res = await api.get('/checkins', { start_date: today, end_date: today, per_page: 1 })
+      const items = res?.data?.items || []
+      if (items.length > 0) {
+        const record = items[0]
+        const statusMap = {
+          normal: '正常',
+          abnormal: '异常',
+          late: '迟到',
+          not_signed: '未签'
+        }
+        this.setData({
+          todayCheckin: record,
+          todayStatusText: statusMap[record.status] || '已签到',
+          todayTimeText: record.checkin_time ? record.checkin_time.slice(11, 19) : ''
+        })
+      } else {
+        this.setData({
+          todayCheckin: null,
+          todayStatusText: '今日未签到',
+          todayTimeText: ''
+        })
+      }
+    } catch (err) {
+      console.warn('加载今日签到状态失败', err)
     }
   },
 
   async getLocation() {
+    if (!this.data.position) {
+      this.setData({ emptyReason: '请先选择或通过岗位申请' })
+      return
+    }
     try {
-      wx.showLoading({ title: '获取位置中...' })
-      
+      wx.showLoading({ title: '获取位置中...', mask: true })
       const res = await wx.getLocation({
-        type: 'gcj02'
+        type: 'gcj02',
+        isHighAccuracy: true,
+        highAccuracyExpireTime: 8000
       })
-      
+      const lat = Number(res.latitude)
+      const lng = Number(res.longitude)
+      const latText = isNaN(lat) ? (res.latitude || '') : lat.toFixed(6)
+      const lngText = isNaN(lng) ? (res.longitude || '') : lng.toFixed(6)
       this.setData({
         location: {
-          latitude: res.latitude,
-          longitude: res.longitude
-        }
+          latitude: lat,
+          longitude: lng
+        },
+        locationText: `${latText}, ${lngText}`,
+        permissionDenied: false
       })
-      
-      // 计算距离
-      if (this.data.position) {
-        const distance = this.calculateDistance(
-          res.latitude,
-          res.longitude,
-          this.data.position.latitude,
-          this.data.position.longitude
-        )
-        
-        let status = 'normal'
-        if (distance > 500) {
-          status = 'abnormal'
-        } else if (distance > 200) {
-          status = 'warning'
-        }
-        
-        this.setData({
-          distance: distance,
-          status: status
-        })
-      }
-      
       wx.hideLoading()
     } catch (error) {
       wx.hideLoading()
-      if (error.errMsg.includes('auth deny')) {
+      this.setData({ permissionDenied: true })
         wx.showModal({
-          title: '提示',
-          content: '需要授权位置信息才能签到',
-          showCancel: false
-        })
-      }
+        title: '需要定位权限',
+        content: '请允许获取位置信息以完成签到，可前往设置开启定位权限。',
+        confirmText: '去设置',
+        success: (res) => {
+          if (res.confirm) {
+            wx.openSetting()
+          }
+        }
+      })
     }
   },
 
-  calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371000 // 地球半径（米）
-    const dLat = (lat2 - lat1) * Math.PI / 180
-    const dLon = (lon2 - lon1) * Math.PI / 180
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2)
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-    return Math.round(R * c)
-  },
-
   async submitCheckin() {
+    if (!this.data.position) {
+      wx.showToast({ title: '未绑定岗位', icon: 'none' })
+      return
+    }
     if (!this.data.location) {
       wx.showToast({
-        title: '请先获取位置',
+        title: '请先获取当前位置',
         icon: 'none'
       })
       return
     }
-
     try {
-      wx.showLoading({ title: '签到中...' })
-      
+      wx.showLoading({ title: '签到中...', mask: true })
       const result = await api.post('/checkins', {
         position_id: this.data.position.id,
         latitude: this.data.location.latitude,
         longitude: this.data.location.longitude
       })
-      
       wx.hideLoading()
-      
-      if (result.success) {
-        wx.showToast({
+      // 成功或迟到/异常已在后端区分，这里以 success 为准
+      wx.showModal({
           title: '签到成功',
-          icon: 'success'
-        })
-        
-        setTimeout(() => {
-          wx.navigateBack()
-        }, 1500)
+        content: result.message || '已记录签到',
+        confirmText: '查看记录',
+        cancelText: '关闭',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({ url: '/pages/checkin-history/checkin-history' })
+          }
       }
+      })
+      this.loadTodayStatus()
     } catch (error) {
       wx.hideLoading()
-      console.error('签到失败:', error)
+      const errCode = error?.error_code || error?.code
+      // 结构化错误优先
+      if (errCode === 'OUT_OF_RANGE') {
+        const data = error?.data || {}
+        wx.showModal({
+          title: '超出签到范围',
+          content: `当前距离 ${data.distance || ''} 米，允许 ${data.allowed || ''} 米内，请到达指定范围后重试`,
+          showCancel: false
+        })
+      } else if (errCode === 'ALREADY_CHECKED_IN') {
+        wx.showModal({
+          title: '今日已签到',
+          content: '今日只能签到一次',
+          confirmText: '查看记录',
+          success: (res) => {
+            if (res.confirm) {
+              wx.navigateTo({ url: '/pages/checkin-history/checkin-history' })
+            }
+          }
+        })
+      } else if (errCode === 'NOT_IN_CHECKIN_WINDOW') {
+        wx.showModal({
+          title: '当前非签到时段',
+          content: '请在规定时间内完成签到',
+          showCancel: false
+        })
+      } else {
+        wx.showToast({
+          title: error?.message || '签到失败，请稍后再试',
+          icon: 'none'
+        })
+      }
     }
+  },
+
+  goToPositions() {
+    wx.navigateTo({ url: '/pages/positions/positions' })
+  },
+
+  goToHistory() {
+    wx.navigateTo({ url: '/pages/checkin-history/checkin-history' })
+  },
+
+  retryLoad() {
+    this.initPage()
   }
 })
 

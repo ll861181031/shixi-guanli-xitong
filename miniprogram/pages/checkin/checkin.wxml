@@ -1,36 +1,41 @@
 <view class="container">
-  <view wx:if="{{position}}" class="card">
+  <view wx:if="{{loadingPosition}}" class="skeleton">加载岗位信息...</view>
+  <view wx:if="{{!loadingPosition && !hasApproved}}" class="empty">
+    <view class="empty-text">{{emptyReason || '暂无可签到的岗位'}}</view>
+    <button class="btn-primary" bindtap="goToPositions">去查看岗位</button>
+    <button class="btn-ghost" bindtap="retryLoad">重试</button>
+  </view>
+
+  <view wx:if="{{!loadingPosition && hasApproved && position}}" class="card">
     <view class="position-info">
       <view class="title">{{position.title}}</view>
       <view class="company">{{position.company_name}}</view>
       <view class="location">📍 {{position.location}}</view>
+      <view class="radius">允许范围：{{allowedRadius}} 米</view>
+    </view>
+
+    <view class="today-status">
+      <view class="status-label">今日状态</view>
+      <view class="status-value">{{todayStatusText}}</view>
+      <view wx:if="{{todayTimeText}}" class="status-desc">签到时间：{{todayTimeText}}</view>
     </view>
 
     <view class="location-section">
       <button class="btn-primary" bindtap="getLocation">获取当前位置</button>
-      
       <view wx:if="{{location}}" class="location-info">
         <view class="info-item">
           <text>当前位置：</text>
-          <text>{{location.latitude.toFixed(6)}}, {{location.longitude.toFixed(6)}}</text>
+          <text>{{locationText || (location.latitude + ', ' + location.longitude)}}</text>
         </view>
-        <view class="info-item">
-          <text>距离：</text>
-          <text class="{{status === 'abnormal' ? 'danger' : status === 'warning' ? 'warning' : 'success'}}">
-            {{distance}}米
-          </text>
-        </view>
-        <view class="status-info">
-          <text wx:if="{{status === 'normal'}}" class="success">✓ 距离正常，可以签到</text>
-          <text wx:elif="{{status === 'warning'}}" class="warning">⚠ 距离较远，请确认位置</text>
-          <text wx:else class="danger">✗ 距离过远，签到将标记为异常</text>
-        </view>
+        <view class="hint">请确保在岗位指定范围内完成签到</view>
       </view>
     </view>
 
     <button class="btn-primary submit-btn" bindtap="submitCheckin" disabled="{{!location}}">
       提交签到
     </button>
+
+    <button class="btn-ghost" bindtap="goToHistory">查看签到记录</button>
   </view>
 </view>
 

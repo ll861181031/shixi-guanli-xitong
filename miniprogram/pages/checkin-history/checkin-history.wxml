@@ -1,9 +1,29 @@
 <view class="container">
+  <view class="calendar-card">
+    <view class="calendar-header">
+      <view class="month">{{monthLabel}}</view>
+      <view class="legend">
+        <view class="dot normal"></view><text>正常</text>
+        <view class="dot late"></view><text>迟到</text>
+        <view class="dot abnormal"></view><text>异常</text>
+        <view class="dot not_signed"></view><text>未签</text>
+      </view>
+    </view>
+    <view class="calendar-grid">
+      <view wx:for="{{calendarDays}}" wx:key="dateStr" class="day {{item.status}}">
+        <text>{{item.day}}</text>
+      </view>
+    </view>
+  </view>
+
   <view wx:for="{{checkins}}" wx:key="id" class="card checkin-card">
     <view class="header">
       <view class="date">{{item.checkin_date}}</view>
       <view class="status {{item.status}}">
-        {{item.status === 'normal' ? '正常' : '异常'}}
+        <block wx:if="{{item.status === 'normal'}}">正常</block>
+        <block wx:elif="{{item.status === 'late'}}">迟到</block>
+        <block wx:elif="{{item.status === 'abnormal'}}">异常</block>
+        <block wx:else>未签</block>
       </view>
     </view>
     <view class="info">
@@ -15,6 +35,7 @@
     <view class="info">
       <text>时间：{{item.checkin_time}}</text>
     </view>
+    <view wx:if="{{item.abnormal_reason}}" class="abnormal-reason">原因：{{item.abnormal_reason}}</view>
   </view>
   
   <view wx:if="{{checkins.length === 0}}" class="empty">暂无签到记录</view>

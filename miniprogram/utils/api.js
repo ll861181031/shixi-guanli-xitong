@@ -11,12 +11,12 @@ function request(url, method = 'GET', data = {}) {
         'Authorization': app.globalData.token ? `Bearer ${app.globalData.token}` : ''
       },
       success(res) {
-        if (res.statusCode === 200) {
-          if (res.data.success) {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          if (res.data && res.data.success !== false) {
             resolve(res.data)
           } else {
             wx.showToast({
-              title: res.data.message || '请求失败',
+              title: res.data?.message || '请求失败',
               icon: 'none'
             })
             reject(res.data)

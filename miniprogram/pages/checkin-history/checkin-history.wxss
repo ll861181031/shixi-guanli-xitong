@@ -1,5 +1,78 @@
+.container {
+  padding: 20rpx;
+}
+
+.calendar-card {
+  background: #fff;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.month {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6rpx;
+}
+
+.dot.normal { background: #67c23a; }
+.dot.late { background: #e6a23c; }
+.dot.abnormal { background: #f56c6c; }
+.dot.not_signed { background: #dcdfe6; }
+.dot.future { background: #eaeaea; }
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8rpx;
+}
+
+.day {
+  height: 80rpx;
+  border-radius: 10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: #303133;
+  background: #f8f9fb;
+}
+
+.day.normal { background: #eaf7e9; color: #2f8f2f; }
+.day.late { background: #fdf4e6; color: #c5801a; }
+.day.abnormal { background: #fdeeee; color: #cf3a3a; }
+.day.not_signed { background: #f2f3f5; color: #909399; }
+.day.future { background: #f7f7f7; color: #c0c4cc; }
+
 .checkin-card {
-  padding: 30rpx;
+  margin-bottom: 20rpx;
+  padding: 20rpx;
+  background-color: #fff;
+  border-radius: 10rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
 }
 
 .header {
@@ -16,24 +89,26 @@
 
 .status {
   padding: 5rpx 15rpx;
-  border-radius: 5rpx;
+  border-radius: 16rpx;
   font-size: 24rpx;
+  color: #fff;
 }
 
-.status.normal {
-  background-color: #f0f9ff;
-  color: #67c23a;
-}
-
-.status.abnormal {
-  background-color: #fef0f0;
-  color: #f56c6c;
-}
+.status.normal { background-color: #67c23a; }
+.status.abnormal { background-color: #f56c6c; }
+.status.late { background-color: #e6a23c; }
+.status.not_signed { background-color: #909399; }
 
 .info {
   font-size: 26rpx;
   color: #666;
   margin-bottom: 10rpx;
+}
+
+.abnormal-reason {
+  margin-top: 8rpx;
+  color: #f56c6c;
+  font-size: 24rpx;
 }
 
 .empty {

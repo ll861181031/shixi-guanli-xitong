@@ -19,6 +19,7 @@ class Position(db.Model):
     location = db.Column(db.String(200), nullable=False, comment='工作地点')
     latitude = db.Column(db.Float, nullable=False, comment='纬度')
     longitude = db.Column(db.Float, nullable=False, comment='经度')
+    checkin_radius = db.Column(db.Integer, nullable=False, default=200, comment='签到半径(米)')
     min_salary = db.Column(db.Integer, nullable=True, comment='最低薪资(元/月)')
     max_salary = db.Column(db.Integer, nullable=True, comment='最高薪资(元/月)')
     internship_duration = db.Column(db.String(50), nullable=True, comment='实习时长')
@@ -56,6 +57,7 @@ class Position(db.Model):
             'location': self.location,
             'latitude': self.latitude,
             'longitude': self.longitude,
+            'checkin_radius': self.checkin_radius,
             'min_salary': self.min_salary,
             'max_salary': self.max_salary,
             'salary_range_text': self.get_salary_range_text(),

@@ -6,6 +6,9 @@ const MAX_FILE_SIZE = 16 * 1024 * 1024 // 16MB，与后端配置保持一致
 Page({
   data: {
     position: null,
+    hasApproved: false,
+    loadingPosition: false,
+    emptyReason: '',
     weekNumber: 1,
     content: '',
     attachment: null,
@@ -21,17 +24,39 @@ Page({
   },
 
   async loadPosition() {
+    this.setData({ loadingPosition: true })
     try {
-      const appRes = await api.get('/applications', { status: 'approved', per_page: 1 })
-      if (appRes.success && appRes.data.items.length > 0) {
-        const application = appRes.data.items[0]
-        const posRes = await api.get(`/positions/${application.position_id}`)
-        if (posRes.success) {
-          this.setData({ position: posRes.data.data })
-        }
+      const appRes = await api.get('/applications', { status: 'approved', per_page: 50 })
+      const items = appRes?.data?.items || appRes?.data?.data?.items || []
+      const approved = items.find(item => item.status === 'approved')
+      if (!approved) {
+        this.setData({
+          hasApproved: false,
+          emptyReason: '暂无已通过的申请，无法提交周报'
+        })
+        return
+      }
+      const posRes = await api.get(`/positions/${approved.position_id}`)
+      const pos = posRes?.data?.data || posRes?.data
+      if (pos) {
+        this.setData({
+          position: pos,
+          hasApproved: true
+        })
+      } else {
+        this.setData({
+          hasApproved: false,
+          emptyReason: '加载岗位信息失败，请稍后重试'
+        })
       }
     } catch (error) {
       console.error('加载岗位失败:', error)
+      this.setData({
+        hasApproved: false,
+        emptyReason: '加载岗位信息失败，请稍后重试'
+      })
+    } finally {
+      this.setData({ loadingPosition: false })
     }
   },
 
@@ -213,6 +238,14 @@ Page({
       return
     }
 
+    if (!this.data.hasApproved) {
+      wx.showToast({
+        title: '需有已通过的岗位申请才能提交周报',
+        icon: 'none'
+      })
+      return
+    }
+
     if (!this.data.content) {
       wx.showToast({
         title: '请输入周报内容',
@@ -222,7 +255,7 @@ Page({
     }
 
     try {
-      wx.showLoading({ title: '提交中...' })
+      wx.showLoading({ title: '提交中...', mask: true })
       
       const result = await api.post('/weekly-reports', {
         position_id: this.data.position.id,
@@ -247,7 +280,15 @@ Page({
     } catch (error) {
       wx.hideLoading()
       console.error('提交失败:', error)
+      wx.showToast({
+        title: error?.message || error?.data?.message || '提交失败，请稍后重试',
+        icon: 'none'
+      })
     }
+  },
+
+  retryLoad() {
+    this.loadPosition()
   }
 })
 

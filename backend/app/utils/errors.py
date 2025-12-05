@@ -5,10 +5,11 @@ logger = logging.getLogger(__name__)
 
 class APIError(Exception):
     """API错误基类"""
-    def __init__(self, message, status_code=400, error_code=None):
+    def __init__(self, message, status_code=400, error_code=None, code=None, data=None):
         self.message = message
         self.status_code = status_code
-        self.error_code = error_code
+        self.error_code = error_code or code
+        self.data = data
         super().__init__(self.message)
 
 def register_error_handlers(app):
@@ -23,6 +24,8 @@ def register_error_handlers(app):
             'message': error.message,
             'error_code': error.error_code
         }
+        if error.data is not None:
+            response['data'] = error.data
         return jsonify(response), error.status_code
     
     @app.errorhandler(404)

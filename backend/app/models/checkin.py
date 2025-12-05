@@ -13,9 +13,11 @@ class CheckIn(db.Model):
     latitude = db.Column(db.Float, nullable=False, comment='签到纬度')
     longitude = db.Column(db.Float, nullable=False, comment='签到经度')
     distance = db.Column(db.Float, nullable=False, comment='距离（米）')
-    status = db.Column(db.String(20), default='normal', comment='状态: normal/abnormal')
+    status = db.Column(db.String(20), default='normal', comment='状态: normal/abnormal/late/not_signed')
+    abnormal_reason = db.Column(db.Text, nullable=True, comment='异常原因')
     remark = db.Column(db.String(500), nullable=True, comment='备注')
     created_at = db.Column(db.DateTime, default=datetime.utcnow, comment='创建时间')
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, comment='更新时间')
     
     # 关系
     position = db.relationship('Position', foreign_keys=[position_id])
@@ -36,8 +38,10 @@ class CheckIn(db.Model):
             'longitude': self.longitude,
             'distance': round(self.distance, 2),
             'status': self.status,
+            'abnormal_reason': self.abnormal_reason,
             'remark': self.remark,
             'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
         }
     
     def __repr__(self):

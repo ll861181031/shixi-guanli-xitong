@@ -12,6 +12,9 @@
     <view class="info" wx:if="{{item.score !== null}}">
       <text>评分：{{item.score}}分</text>
     </view>
+    <view class="info" wx:if="{{item.status === 'reviewed' && item.comment}}">
+      <text>有批改意见</text>
+    </view>
     <view class="time">提交时间：{{item.created_at}}</view>
   </view>
   

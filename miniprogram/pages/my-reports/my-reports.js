@@ -17,13 +17,11 @@ Page({
   async loadReports() {
     try {
       const result = await api.get('/weekly-reports')
-      if (result.success) {
-        this.setData({
-          reports: result.data.items
-        })
-      }
+      const items = result?.data?.items || result?.data?.data?.items || []
+      this.setData({ reports: items })
     } catch (error) {
       console.error('加载周报列表失败:', error)
+      wx.showToast({ title: '加载周报失败', icon: 'none' })
     }
   },
 

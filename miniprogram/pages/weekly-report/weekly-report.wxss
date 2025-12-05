@@ -37,3 +37,21 @@
   margin-top: 40rpx;
 }
 
+.empty {
+  text-align: center;
+  padding: 80rpx 40rpx;
+  color: #909399;
+}
+
+.empty-text {
+  margin-bottom: 30rpx;
+  font-size: 28rpx;
+}
+
+.skeleton {
+  padding: 40rpx;
+  text-align: center;
+  color: #909399;
+  font-size: 28rpx;
+}
+
